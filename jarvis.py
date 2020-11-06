@@ -1,10 +1,15 @@
 import pyttsx3
 import speech_recognition as sr 
-import datetime,wikipedia,webbrowser,os,random,requests,pyautogui,playsound
-import urllib.request
-import bs4 as bs
+import datetime,wikipedia,webbrowser,os,random,requests,pyautogui,playsound,subprocess
+import urllib.request,bs4 as bs,sys
+import mini,wolframalpha
 
 """Setting variables"""
+try:
+    app=wolframalpha.Client("JPK4EE-L7KR3XWP9A")
+except Exception as e:
+    pass
+
 chrome_path="C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s"
 engine=pyttsx3.init('sapi5')
 voices=engine.getProperty('voices')
@@ -90,11 +95,11 @@ if __name__=="__main__":
             speak("My name is Jarvis and i'm here to serve you.")
         elif there_exists(['open youtube','access youtube'],query):
             webbrowser.get(chrome_path).open("https://www.youtube.com")
-        elif there_exists(['open google'],query):
-            webbrowser.get(chrome_path).open("https://www.google.com")
         elif there_exists(['open google and search','google and search'],query):
             url='https://google.com/search?q='+query[query.find('for')+4:]
             webbrowser.get(chrome_path).open(url)
+        elif there_exists(['open google'],query):
+            webbrowser.get(chrome_path).open("https://www.google.com")
         elif there_exists(['find location of'],query):
             url='https://google.nl/maps/place/'+query[query.find('of')+3:]+'/&amp'
             webbrowser.get(chrome_path).open(url)
@@ -111,6 +116,12 @@ if __name__=="__main__":
             # print(songs)
             indx=random.randint(0,50)
             os.startfile(os.path.join(music_dir,songs[indx]))
+        elif there_exists(['make a note','make note','remember this as note','open notepad and write'],query):
+            speak("What would you like to write down?")
+            data=takeCommand()
+            n=mini.note()
+            n.Note(data)
+            speak("I have a made a note of that.")
         elif there_exists(["toss a coin","flip a coin","toss"],query):
             moves=["head", "tails"]   
             cmove=random.choice(moves)
@@ -136,23 +147,35 @@ if __name__=="__main__":
             os.chdir(a+'\Screenshots')
             img_captured.save("Screenshot"+str(g.__next__())+".png")
             os.chdir(a)
-        elif there_exists(["plus","minus","multiply","divide","power","+","-","*","/"],query):
-            opr = query.split()[1]
+        # elif there_exists(["plus","minus","multiply","divide","power","+","-","*","/"],query):
+        #     opr = query.split()[1]
 
-            if opr == '+' or 'plus':
-                speak(int(query.split()[0]) + int(query.split()[2]))
-            elif opr == '-' or 'minus':
-                speak(int(query.split()[0]) - int(query.split()[2]))
-            elif opr == 'multiply' or 'x':
-                speak(int(query.split()[0]) * int(query.split()[2]))
-            elif opr == 'divide' or '/':
-                speak(int(query.split()[0]) / int(query.split()[2]))
-            elif opr == 'power' or '^':
-                speak(int(query.split()[0]) ** int(query.split()[2]))
-            else:
-                speak("Wrong Operator")
+        #     if opr == '+' or 'plus':
+        #         speak(int(query.split()[0]) + int(query.split()[2]))
+        #     elif opr == '-' or 'minus':
+        #         speak(int(query.split()[0]) - int(query.split()[2]))
+        #     elif opr == 'multiply' or 'x':
+        #         speak(int(query.split()[0]) * int(query.split()[2]))
+        #     elif opr == 'divide' or '/':
+        #         speak(int(query.split()[0]) / int(query.split()[2]))
+        #     elif opr == 'power' or '^':
+        #         speak(int(query.split()[0]) ** int(query.split()[2]))
+        #     else:
+        #         speak("Wrong Operator")
+        elif there_exists(['temperature'],query):
+            try:
+                res=app.query(query)
+                speak(next(res.results).text)
+            except:
+                print("Internet Connection Error")
+        elif there_exists(['+','-','*','/','plus','add','minus','subtract','divide','multiply'],query):
+            try:
+                res=app.query(query)
+                speak(next(res.results).text)
+            except:
+                print("Internet Connection Error")
         elif there_exists(['exit','quit','shutdown','shut up','goodbye'],query):
-            quit()
+            sys.exit()
         else:
-            quit()
+            sys.exit()
     
