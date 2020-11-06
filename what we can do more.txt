@@ -1,0 +1,5 @@
+1) class for user information
+    can create database for storing database
+    we need to create new file for this 
+2) also for assitant information
+
