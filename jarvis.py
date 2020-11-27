@@ -1,6 +1,6 @@
 import pyttsx3
-import speech_recognition as sr 
-import datetime,wikipedia,webbrowser,os,random,requests,pyautogui,playsound,subprocess
+import speech_recognition as sr
+import datetime,wikipedia,webbrowser,os,random,requests,pyautogui,playsound,subprocess,time
 import urllib.request,bs4 as bs,sys
 import mini,wolframalpha
 
@@ -10,7 +10,9 @@ try:
 except Exception as e:
     pass
 
+#setting chrome path
 chrome_path="C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s"
+
 engine=pyttsx3.init('sapi5')
 voices=engine.getProperty('voices')
 engine.setProperty('voice',voices[1].id)
@@ -85,20 +87,27 @@ if __name__=="__main__":
     g=gen()
     while(True):
         query=takeCommand().lower()
+        
+        #wikipedia search 
         if there_exists(['wikipedia'],query):
             speak("Searching wikipedia....")
             query=query.replace("wikipedia","")
             results=wikipedia.summary(query,sentences=2)
             speak("According to wikipedia")
             speak(results)
-        elif there_exists(["what is your name","What's your name","tell me your name"],query):
+           
+        elif there_exists(["what is your name","what's your name","tell me your name"],query):
             speak("My name is Jarvis and i'm here to serve you.")
+
+        #google, youtube and location
         elif there_exists(['open youtube','access youtube'],query):
+            speak("Opening youtube")
             webbrowser.get(chrome_path).open("https://www.youtube.com")
         elif there_exists(['open google and search','google and search'],query):
             url='https://google.com/search?q='+query[query.find('for')+4:]
             webbrowser.get(chrome_path).open(url)
         elif there_exists(['open google'],query):
+            speak("opening google")
             webbrowser.get(chrome_path).open("https://www.google.com")
         elif there_exists(['find location of'],query):
             url='https://google.nl/maps/place/'+query[query.find('of')+3:]+'/&amp'
@@ -109,44 +118,81 @@ if __name__=="__main__":
         elif there_exists(["where am i"],query):
             Ip_info = requests.get('https://api.ipdata.co?api-key=test').json()
             loc = Ip_info['region']
-            speak(f"You must be somewhere in {loc}")  
+            speak(f"You must be somewhere in {loc}")
+
+        #play music 
         elif there_exists(['play music'],query):
+            speak("Playing musics")
             music_dir='D:\\Musics\\vishal'
             songs=os.listdir(music_dir)
             # print(songs)
             indx=random.randint(0,50)
             os.startfile(os.path.join(music_dir,songs[indx]))
+
+        #makig note
         elif there_exists(['make a note','make note','remember this as note','open notepad and write'],query):
             speak("What would you like to write down?")
             data=takeCommand()
             n=mini.note()
             n.Note(data)
             speak("I have a made a note of that.")
+
+        #flipping coin
         elif there_exists(["toss a coin","flip a coin","toss"],query):
-            moves=["head", "tails"]   
+            moves=["head", "tails"]
             cmove=random.choice(moves)
             playsound.playsound('quarter spin flac.mp3')
             speak("It's " + cmove)
+
+        #time and date
         elif there_exists(['the time'],query):
             strTime =datetime.datetime.now().strftime("%H:%M:%S")
-            speak(f"Sir, the time is {strTime}")     
+            speak(f"Sir, the time is {strTime}")
         elif there_exists(['the date'],query):
             strDay=datetime.date.today().strftime("%B %d, %Y")
             speak(f"Today is {strDay}")
+
+        #opening software applications
+        elif there_exists(['open notepad++','open notepad + +','start notepad plus plus','Open notepad++','Open Notepad+ +','start Notepad plus plus','Start Notepad++'],query):
+            speak('Opening notepad++')
+            os.startfile(r'C:\Program Files\Notepad++\notepad++.exe')
+            time.sleep(3)
+        elif there_exists(['open notepad','start notepad','Open notepad','Open Notepad','start Notepad','Start Notepad'],query):
+            speak('Opening notepad')
+            os.startfile(r'C:\Windows\notepad.exe')
+            time.sleep(3)
         elif there_exists(['open code','open visual studio ','open vs code'],query):
+            speak("Opeining vs code")
             codepath=r"C:\Users\Vishal\AppData\Local\Programs\Microsoft VS Code\Code.exe"
             os.startfile(codepath)
+            time.sleep(4)
+        elif there_exists(['open file manager','file manager','open my computer','my computer','open file explorer','file explorer','open this pc','this pc'],query):
+            speak("Opening File Explorer")
+            os.startfile("C:\Windows\explorer.exe")
+            time.sleep(3)
         elif there_exists(['powershell'],query):
+            speak("opening powershell")
             os.startfile(r'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe')
+            time.sleep(4)
         elif there_exists(['whatsapp'],query):
+            speak("opening whatsApp")
             os.startfile(r'C:\Users\Vishal\AppData\Local\WhatsApp\WhatsApp.exe')
+            time.sleep(7)
+        elif there_exists(['open vlc','vlc media player','vlc player'],query):
+            speak("Opening VLC media player")
+            os.startfile(r"C:\Program Files\VideoLAN\VLC\vlc.exe")
+            time.sleep(5)
+
+        #screeshot
         elif there_exists(['take screenshot','capture my screen'],query):
+            speak("taking screenshot")
             img_captured=pyautogui.screenshot()
             a=os.getcwd()
             os.mkdir("Screenshots")
             os.chdir(a+'\Screenshots')
             img_captured.save("Screenshot"+str(g.__next__())+".png")
             os.chdir(a)
+
         # elif there_exists(["plus","minus","multiply","divide","power","+","-","*","/"],query):
         #     opr = query.split()[1]
 
@@ -168,14 +214,24 @@ if __name__=="__main__":
                 speak(next(res.results).text)
             except:
                 print("Internet Connection Error")
-        elif there_exists(['+','-','*','/','plus','add','minus','subtract','divide','multiply'],query):
+        elif there_exists(['+','-','*','x','/','plus','add','minus','subtract','divide','multiply','divided','multiplied'],query):
             try:
                 res=app.query(query)
                 speak(next(res.results).text)
             except:
                 print("Internet Connection Error")
-        elif there_exists(['exit','quit','shutdown','shut up','goodbye'],query):
+            
+        #shutting down system
+        elif there_exists(['exit','quit','shutdown','shut up','goodbye','shut down'],query):
+            speak("shutting down")
             sys.exit()
+        
+        #it will give online results for the query
         else:
-            sys.exit()
-    
+            try:
+                res=app.query(query)
+                speak(next(res.results).text)
+            except:
+                print("Internet Connection Error")
+
+
