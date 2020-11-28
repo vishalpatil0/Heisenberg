@@ -3,6 +3,7 @@ import speech_recognition as sr
 import datetime,wikipedia,webbrowser,os,random,requests,pyautogui,playsound,subprocess,time
 import urllib.request,bs4 as bs,sys
 import mini,wolframalpha
+import StonePaperScissor as SPS
 
 """Setting variables"""
 try:
@@ -82,7 +83,7 @@ def takeCommand():
 
 
 if __name__=="__main__":
-    # greet()
+    greet()
     """Logic for execution task based on query"""
     g=gen()
     while(True):
@@ -129,6 +130,13 @@ if __name__=="__main__":
             indx=random.randint(0,50)
             os.startfile(os.path.join(music_dir,songs[indx]))
 
+        #play game
+        elif there_exists(['would like to play some games','want to play games','play games','open games','play game','open game'],query):
+            speak("We have only one game right now")
+            speak("Stone Paper Scissor")
+            speak("opening stone paper scissor")
+            SPS.start()
+
         #makig note
         elif there_exists(['make a note','make note','remember this as note','open notepad and write'],query):
             speak("What would you like to write down?")
@@ -153,11 +161,15 @@ if __name__=="__main__":
             speak(f"Today is {strDay}")
 
         #opening software applications
-        elif there_exists(['open notepad++','open notepad + +','start notepad plus plus','Open notepad++','Open Notepad+ +','start Notepad plus plus','Start Notepad++'],query):
+        elif there_exists(['open chrome'],query):
+            speak("Opening chrome")
+            os.startfile(r'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe')
+            time.sleep(5)
+        elif there_exists(['open notepad plus plus','open notepad++','open notepad ++'],query):
             speak('Opening notepad++')
             os.startfile(r'C:\Program Files\Notepad++\notepad++.exe')
             time.sleep(3)
-        elif there_exists(['open notepad','start notepad','Open notepad','Open Notepad','start Notepad','Start Notepad'],query):
+        elif there_exists(['open notepad','start notepad'],query):
             speak('Opening notepad')
             os.startfile(r'C:\Windows\notepad.exe')
             time.sleep(3)
@@ -226,6 +238,8 @@ if __name__=="__main__":
             speak("shutting down")
             sys.exit()
         
+        elif there_exists(['none'],query):
+            pass
         #it will give online results for the query
         else:
             try:
