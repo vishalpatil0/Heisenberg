@@ -193,7 +193,7 @@ if __name__=="__main__":
 
         #screeshot
         elif there_exists(['take screenshot','take a screenshot','screenshot please','capture my screen'],query):
-            speak("taking screenshot")
+            speak("Taking screenshot")
             m2=mini.screenshot()
             m2.takeSS()
             speak('Captured screenshot is saved in Screenshots folder.')
