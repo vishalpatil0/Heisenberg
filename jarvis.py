@@ -35,9 +35,6 @@ def there_exists(terms,query):
         if term in query:
             return True
 
-def gen():
-    for i in range(1,1001):
-        yield i
 
 def greet():
     hour=int(datetime.datetime.now().hour)
@@ -83,9 +80,8 @@ def takeCommand():
 
 
 if __name__=="__main__":
-    greet()
+    # greet()
     """Logic for execution task based on query"""
-    g=gen()
     while(True):
         query=takeCommand().lower()
         
@@ -138,7 +134,7 @@ if __name__=="__main__":
             SPS.start()
 
         #makig note
-        elif there_exists(['make a note','make note','remember this as note','open notepad and write'],query):
+        elif there_exists(['make a note','take note','take a note','note it down','make note','remember this as note','open notepad and write'],query):
             speak("What would you like to write down?")
             data=takeCommand()
             n=mini.note()
@@ -196,14 +192,11 @@ if __name__=="__main__":
             time.sleep(5)
 
         #screeshot
-        elif there_exists(['take screenshot','capture my screen'],query):
+        elif there_exists(['take screenshot','take a screenshot','screenshot please','capture my screen'],query):
             speak("taking screenshot")
-            img_captured=pyautogui.screenshot()
-            a=os.getcwd()
-            os.mkdir("Screenshots")
-            os.chdir(a+'\Screenshots')
-            img_captured.save("Screenshot"+str(g.__next__())+".png")
-            os.chdir(a)
+            m2=mini.screenshot()
+            m2.takeSS()
+            speak('Captured screenshot is saved in Screenshots folder.')
 
         # elif there_exists(["plus","minus","multiply","divide","power","+","-","*","/"],query):
         #     opr = query.split()[1]

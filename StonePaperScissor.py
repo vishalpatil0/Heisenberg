@@ -23,7 +23,7 @@ def takeCommand():
     try: 
         print("Recognizing...")
         query= recog.recognize_google(audio)
-        speak(f"User said: {query}\n")
+        print(f"User said: {query}\n")
     except Exception as e:
         return 'None'
     return query
@@ -32,17 +32,17 @@ def start():
     list1=['stone','paper','scissor']
     while(True):
         print("\n\n--------------------------------welcome-----------------------------")
-        speak("\n\nThis game is of 3 round those who win  2 round is the winner of the game")
+        speak("\n\nThis game is contain 3 rounds those who win maximum rounds is the winner of this game.")
         human_score=0
         computer_score=0
         i=0
         while(i<3):
             if i==2:
                 if(human_score>computer_score):
-                    speak("\nNo need of 3rd round bcoz human's score is obviously greater thean computer's.\n")
+                    speak("\nNo need of 3rd round because human's score is obviously greater thean computer's.\n")
                     break
                 elif(human_score<computer_score):
-                    speak("\nNo need of 3rd round bcoz computer's score is obviously greater thean human's.\n")
+                    speak("\nNo need of 3rd round because computer's score is obviously greater thean human's.\n")
                     break
 
             print(50*"*")
@@ -64,13 +64,13 @@ def start():
             elif((user_ip=='stone' and comp_ip=='paper') or (user_ip=='paper' and comp_ip=='scissor') or (user_ip=='scissor' and comp_ip=='stone') ):
                 computer_score+=1
                 speak("\nComputer win this round\n")
-                speak(f"\nComputre choice was {comp_ip}\n")
+                speak(f"\nComputre's choice was {comp_ip}\n")
                 print(50*"+")
                 i+=1
             elif((comp_ip=='stone' and user_ip=='paper') or (user_ip=='scissor' and comp_ip=='paper') or (user_ip=='stone' and comp_ip=='scissor')):
                 human_score+=1
                 speak("\nHuman win this round\n")
-                speak(f"\nComputre choice was {comp_ip}\n")
+                speak(f"\nComputre's choice was {comp_ip}\n")
                 print(50*"+")
                 i+=1
         
@@ -85,5 +85,9 @@ def start():
         print(50*"*")
         speak('If you want repeat this game then say REPEAT.')
         decision=takeCommand().lower()
-        if(decision!='repeat'):
+        if(decision=='repeat'):
+            pass
+        else:
+            speak("Getting out of this game to main thread.")
             break
+

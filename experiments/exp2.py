@@ -1,7 +1,9 @@
-str1='open google and search for something'
+class A:
+    a=4
+    def ok(self):
+        print(a)
 
 
+m=A()
 
-
-print(str1[str1.find('for')+4:])
-
+m.ok()
