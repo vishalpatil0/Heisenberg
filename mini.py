@@ -1,4 +1,4 @@
-import datetime,subprocess,os,pyautogui
+import datetime,subprocess,os,pyautogui,string,random
 import pyttsx3
 import speech_recognition as sr
 
@@ -73,7 +73,21 @@ class screenshot:
         img_captured.save('screenshot-'+str(date).replace(':','-')+'.png')
         os.chdir(a)  
 
-
-s=SpeakRecog()
-
-print(s.takeCommand())
+class PasswordGenerator:
+    def givePSWD(self):
+        SR=SpeakRecog()
+        SR.speak("What type of password you want")
+        print("\nPassword Level we have:-\n\nPoor Level\nAverage Level\nStrong Level\n")
+        while(True):
+            query=SR.takeCommand().lower()
+            if ('poor' in query):
+                return "Your Password is = "+"".join(random.sample(string.ascii_letters,7))
+                break
+            elif ('average' in query):
+                return "Your Password is = "+"".join(random.sample(string.ascii_letters+string.digits,7))
+                break
+            elif ('strong' in query):
+                return "Your Password is = "+"".join(random.sample(string.ascii_letters+string.digits+string.punctuation,7))
+                break
+            else:
+                SR.speak("Please say it again")        

@@ -20,7 +20,6 @@ def there_exists(terms,query):
         if term in query:
             return True
 
-
 def greet():
     hour=int(datetime.datetime.now().hour)
     if hour<=0 and hour<12:
@@ -145,6 +144,11 @@ if __name__=="__main__":
             os.startfile(r"C:\Program Files\VideoLAN\VLC\vlc.exe")
             time.sleep(5)
 
+        #password generator
+        elif there_exists(['suggest me a password','password suggestion please','i want a password'],query):
+            m3=mini.PasswordGenerator()
+            print(m3.givePSWD())
+
         #screeshot
         elif there_exists(['take screenshot','take a screenshot','screenshot please','capture my screen'],query):
             m2.speak("Taking screenshot")
@@ -188,11 +192,17 @@ if __name__=="__main__":
         elif there_exists(['none'],query):
             pass
         #it will give online results for the query
-        else:
+
+        elif there_exists(['search something for me','show me result for','show me results for','to do a little search','search mode'],query):
+            m2.speak('What you want me to search for?')
+            query=m2.takeCommand()
+            m2.speak(f"Showing results for {query}")
             try:
                 res=app.query(query)
                 m2.speak(next(res.results).text)
             except:
-                print("Internet Connection Error")
+                print("Sorry, but there is a little problem while fetching the result.")
 
+        else:
+            m2.speak("Sorry it did not match with any commands that i'm registered with. Please say it again.")
 
