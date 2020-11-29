@@ -3,8 +3,7 @@ import urllib.request,bs4 as bs,sys
 import mini,wolframalpha
 import StonePaperScissor as SPS
 
-m2=mini.SpeakRecog()
-
+m2=mini.SpeakRecog()    #Speak and Recognition class instance
 
 """Setting variables"""
 try:
@@ -175,6 +174,13 @@ if __name__=="__main__":
         elif there_exists(['record my voice','start voice recorder','voice recorder'],query):
             m4=mini.VoiceRecorer()
             m4.Record()
+            del m4
+        
+        #text to speech conversion
+        elif there_exists(['text to speech','convert my notes to voice'],query):
+            m4=mini.TextSpeech()
+            m4.speak()
+            del m4
         # elif there_exists(["plus","minus","multiply","divide","power","+","-","*","/"],query):
         #     opr = query.split()[1]
 

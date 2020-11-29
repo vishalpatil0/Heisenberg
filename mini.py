@@ -3,6 +3,8 @@ import pyttsx3
 import speech_recognition as sr
 import sounddevice
 from scipy.io.wavfile import write
+from tkinter import filedialog
+from tkinter import *
 
 class SpeakRecog:
     engine=pyttsx3.init('sapi5')
@@ -51,7 +53,19 @@ class SpeakRecog:
             return 'None'
         return query
 
+class TextSpeech:
+    def speak(self):
+        root=Tk()
+        root.withdraw()
+        file_path=filedialog.askopenfilename(initialdir = "/",title="Select file",filetypes=(('text file',"*.txt"),("All files", "*.*")))
+        with open(file_path,'r') as f:
+            g=f.read()
+        SR=SpeakRecog()
+        SR.speak(g)
+        del SR
 
+t=TextSpeech()
+t.speak()
 class note:
     def Note(self,data):
         date=datetime.datetime.now()
@@ -119,6 +133,7 @@ class GuessTheNumber:
             SR.speak("Looser. \n Good luck next time")
         else:
             SR.speak("Congratulations. You are winner of the game.")
+        del SR
 
 class VoiceRecorer:
     def Record(self):
