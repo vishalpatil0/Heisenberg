@@ -1,4 +1,53 @@
 import datetime,subprocess,os,pyautogui
+import pyttsx3
+import speech_recognition as sr
+
+class SpeakRecog:
+    engine=pyttsx3.init('sapi5')
+    voices=engine.getProperty('voices')
+    engine.setProperty('voice',voices[1].id)
+    # print(voices[].id)
+    # print(voices)
+
+    """ VOICE RATE"""
+    rate = engine.getProperty('rate')               # getting details of current speaking rate
+    # print(rate)
+    engine.setProperty('rate', 170)                 # setting up new voice rate
+
+    """VOLUME"""
+    volume = engine.getProperty('volume')           #getting to know current volume level (min=0 and max=1)
+    # print(volume)                                 #printing current volume level
+    engine.setProperty('volume', 1.0)               # setting up volume level  between 0 and 1
+    
+    def speak(self,audio):
+        """It speaks the audio"""
+        print(audio)
+        self.engine.say(audio)
+        # engine.save_to_file('Hello World', 'test.mp3')
+        self.engine.runAndWait()
+        # engine.stop()
+
+    def takeCommand(self):
+        """It take microphone input from the user and return string"""
+        recog=sr.Recognizer()
+        # mic=Microphone()
+        with sr.Microphone() as source:
+            #r.adjust_for_ambient_noise(source)
+            print("Listening....")
+            recog.pause_threshold = 1
+            # r.energy_threshold = 45.131829621150224
+            # print(sr.Microphone.list_microphone_names())
+            #print(r.energy_threshold)
+            audio=recog.listen(source)
+        try:
+            print("Recognizing...")
+            query= recog.recognize_google(audio)
+            print(f"User said: {query}\n")
+        except Exception as e:
+            # print(e)
+            print("Say that again please...")
+            return 'None'
+        return query
 
 class note:
     def Note(self,data):
@@ -23,3 +72,8 @@ class screenshot:
         date=datetime.datetime.now()
         img_captured.save('screenshot-'+str(date).replace(':','-')+'.png')
         os.chdir(a)  
+
+
+s=SpeakRecog()
+
+print(s.takeCommand())

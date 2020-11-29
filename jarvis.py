@@ -1,9 +1,10 @@
-import pyttsx3
-import speech_recognition as sr
 import datetime,wikipedia,webbrowser,os,random,requests,pyautogui,playsound,subprocess,time
 import urllib.request,bs4 as bs,sys
 import mini,wolframalpha
 import StonePaperScissor as SPS
+
+m2=mini.SpeakRecog()
+
 
 """Setting variables"""
 try:
@@ -14,22 +15,6 @@ except Exception as e:
 #setting chrome path
 chrome_path="C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s"
 
-engine=pyttsx3.init('sapi5')
-voices=engine.getProperty('voices')
-engine.setProperty('voice',voices[1].id)
-# print(voices[].id)
-# print(voices)
-
-""" VOICE RATE"""
-rate = engine.getProperty('rate')               # getting details of current speaking rate
-# print(rate)
-engine.setProperty('rate', 170)                 # setting up new voice rate
-
-"""VOLUME"""
-volume = engine.getProperty('volume')           #getting to know current volume level (min=0 and max=1)
-# print(volume)                                 #printing current volume level
-engine.setProperty('volume', 1.0)               # setting up volume level  between 0 and 1
-
 def there_exists(terms,query):
     for term in terms:
         if term in query:
@@ -39,72 +24,41 @@ def there_exists(terms,query):
 def greet():
     hour=int(datetime.datetime.now().hour)
     if hour<=0 and hour<12:
-        speak("Good Morning!")
+        m2.speak("Good Morning!")
     elif hour>=12 and hour<18:
-        speak("Good Afternoon!")
+        m2.speak("Good Afternoon!")
     elif hour>18 and hour<21:
-        speak("Good Evening!")
+        m2.speak("Good Evening!")
     else:
-        speak("It is a beautiful night.")
-    speak("I am jarvis sir. How may I help you.")
-
-def speak(audio):
-    """It speaks the audio"""
-    print(audio)
-    engine.say(audio)
-    # engine.save_to_file('Hello World', 'test.mp3')
-    engine.runAndWait()
-    # engine.stop()
-
-def takeCommand():
-    """It take microphone input from the user and return string"""
-    recog=sr.Recognizer()
-    # mic=Microphone()
-    with sr.Microphone() as source:
-        #r.adjust_for_ambient_noise(source)
-        print("Listening....")
-        recog.pause_threshold = 1
-        # r.energy_threshold = 45.131829621150224
-        # print(sr.Microphone.list_microphone_names())
-        #print(r.energy_threshold)
-        audio=recog.listen(source)
-    try:
-        print("Recognizing...")
-        query= recog.recognize_google(audio)
-        print(f"User said: {query}\n")
-    except Exception as e:
-        # print(e)
-        print("Say that again please...")
-        return 'None'
-    return query
-
+        m2.speak("It is a beautiful night.")
+    m2.speak("I am jarvis sir. How may I help you.")
 
 if __name__=="__main__":
     # greet()
     """Logic for execution task based on query"""
     while(True):
-        query=takeCommand().lower()
+        query=m2.takeCommand().lower()
         
         #wikipedia search 
         if there_exists(['wikipedia'],query):
-            speak("Searching wikipedia....")
+            m2.speak("Searching wikipedia....")
             query=query.replace("wikipedia","")
             results=wikipedia.summary(query,sentences=2)
-            speak("According to wikipedia")
-            speak(results)
+            m2.speak("According to wikipedia")
+            m2.speak(results)
            
         elif there_exists(["what is your name","what's your name","tell me your name"],query):
-            speak("My name is Jarvis and i'm here to serve you.")
+            m2.speak("My name is Jarvis and i'm here to serve you.")
 
         #google, youtube and location
         elif there_exists(['open youtube','access youtube'],query):
-            speak("Opening youtube")
+            m2.speak("Opening youtube")
             webbrowser.get(chrome_path).open("https://www.youtube.com")
         elif there_exists(['open google and search','google and search'],query):
             url='https://google.com/search?q='+query[query.find('for')+4:]
             webbrowser.get(chrome_path).open(url)
         elif there_exists(['open google'],query):
-            speak("opening google")
+            m2.speak("opening google")
             webbrowser.get(chrome_path).open("https://www.google.com")
         elif there_exists(['find location of'],query):
             url='https://google.nl/maps/place/'+query[query.find('of')+3:]+'/&amp'
@@ -115,11 +69,11 @@ if __name__=="__main__":
         elif there_exists(["where am i"],query):
             Ip_info = requests.get('https://api.ipdata.co?api-key=test').json()
             loc = Ip_info['region']
-            speak(f"You must be somewhere in {loc}")
+            m2.speak(f"You must be somewhere in {loc}")
 
         #play music 
         elif there_exists(['play music'],query):
-            speak("Playing musics")
+            m2.speak("Playing musics")
             music_dir='D:\\Musics\\vishal'
             songs=os.listdir(music_dir)
             # print(songs)
@@ -128,107 +82,107 @@ if __name__=="__main__":
 
         #play game
         elif there_exists(['would like to play some games','want to play games','play games','open games','play game','open game'],query):
-            speak("We have only one game right now")
-            speak("Stone Paper Scissor")
-            speak("opening stone paper scissor")
+            m2.speak("We have only one game right now")
+            m2.speak("Stone Paper Scissor")
+            m2.speak("opening stone paper scissor")
             SPS.start()
 
         #makig note
         elif there_exists(['make a note','take note','take a note','note it down','make note','remember this as note','open notepad and write'],query):
-            speak("What would you like to write down?")
-            data=takeCommand()
+            m2.speak("What would you like to write down?")
+            data=m2.takeCommand()
             n=mini.note()
             n.Note(data)
-            speak("I have a made a note of that.")
+            m2.speak("I have a made a note of that.")
 
         #flipping coin
         elif there_exists(["toss a coin","flip a coin","toss"],query):
             moves=["head", "tails"]
             cmove=random.choice(moves)
             playsound.playsound('quarter spin flac.mp3')
-            speak("It's " + cmove)
+            m2.speak("It's " + cmove)
 
         #time and date
         elif there_exists(['the time'],query):
             strTime =datetime.datetime.now().strftime("%H:%M:%S")
-            speak(f"Sir, the time is {strTime}")
+            m2.speak(f"Sir, the time is {strTime}")
         elif there_exists(['the date'],query):
             strDay=datetime.date.today().strftime("%B %d, %Y")
-            speak(f"Today is {strDay}")
+            m2.speak(f"Today is {strDay}")
 
         #opening software applications
         elif there_exists(['open chrome'],query):
-            speak("Opening chrome")
+            m2.speak("Opening chrome")
             os.startfile(r'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe')
             time.sleep(5)
         elif there_exists(['open notepad plus plus','open notepad++','open notepad ++'],query):
-            speak('Opening notepad++')
+            m2.speak('Opening notepad++')
             os.startfile(r'C:\Program Files\Notepad++\notepad++.exe')
             time.sleep(3)
         elif there_exists(['open notepad','start notepad'],query):
-            speak('Opening notepad')
+            m2.speak('Opening notepad')
             os.startfile(r'C:\Windows\notepad.exe')
             time.sleep(3)
         elif there_exists(['open code','open visual studio ','open vs code'],query):
-            speak("Opeining vs code")
+            m2.speak("Opeining vs code")
             codepath=r"C:\Users\Vishal\AppData\Local\Programs\Microsoft VS Code\Code.exe"
             os.startfile(codepath)
             time.sleep(4)
         elif there_exists(['open file manager','file manager','open my computer','my computer','open file explorer','file explorer','open this pc','this pc'],query):
-            speak("Opening File Explorer")
+            m2.speak("Opening File Explorer")
             os.startfile("C:\Windows\explorer.exe")
             time.sleep(3)
         elif there_exists(['powershell'],query):
-            speak("opening powershell")
+            m2.speak("opening powershell")
             os.startfile(r'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe')
             time.sleep(4)
         elif there_exists(['whatsapp'],query):
-            speak("opening whatsApp")
+            m2.speak("opening whatsApp")
             os.startfile(r'C:\Users\Vishal\AppData\Local\WhatsApp\WhatsApp.exe')
             time.sleep(7)
         elif there_exists(['open vlc','vlc media player','vlc player'],query):
-            speak("Opening VLC media player")
+            m2.speak("Opening VLC media player")
             os.startfile(r"C:\Program Files\VideoLAN\VLC\vlc.exe")
             time.sleep(5)
 
         #screeshot
         elif there_exists(['take screenshot','take a screenshot','screenshot please','capture my screen'],query):
-            speak("Taking screenshot")
+            m2.speak("Taking screenshot")
             m2=mini.screenshot()
             m2.takeSS()
-            speak('Captured screenshot is saved in Screenshots folder.')
+            m2.speak('Captured screenshot is saved in Screenshots folder.')
 
         # elif there_exists(["plus","minus","multiply","divide","power","+","-","*","/"],query):
         #     opr = query.split()[1]
 
         #     if opr == '+' or 'plus':
-        #         speak(int(query.split()[0]) + int(query.split()[2]))
+        #         m2.speak(int(query.split()[0]) + int(query.split()[2]))
         #     elif opr == '-' or 'minus':
-        #         speak(int(query.split()[0]) - int(query.split()[2]))
+        #         m2.speak(int(query.split()[0]) - int(query.split()[2]))
         #     elif opr == 'multiply' or 'x':
-        #         speak(int(query.split()[0]) * int(query.split()[2]))
+        #         m2.speak(int(query.split()[0]) * int(query.split()[2]))
         #     elif opr == 'divide' or '/':
-        #         speak(int(query.split()[0]) / int(query.split()[2]))
+        #         m2.speak(int(query.split()[0]) / int(query.split()[2]))
         #     elif opr == 'power' or '^':
-        #         speak(int(query.split()[0]) ** int(query.split()[2]))
+        #         m2.speak(int(query.split()[0]) ** int(query.split()[2]))
         #     else:
-        #         speak("Wrong Operator")
+        #         m2.speak("Wrong Operator")
         elif there_exists(['temperature'],query):
             try:
                 res=app.query(query)
-                speak(next(res.results).text)
+                m2.speak(next(res.results).text)
             except:
                 print("Internet Connection Error")
         elif there_exists(['+','-','*','x','/','plus','add','minus','subtract','divide','multiply','divided','multiplied'],query):
             try:
                 res=app.query(query)
-                speak(next(res.results).text)
+                m2.speak(next(res.results).text)
             except:
                 print("Internet Connection Error")
             
         #shutting down system
         elif there_exists(['exit','quit','shutdown','shut up','goodbye','shut down'],query):
-            speak("shutting down")
+            m2.speak("shutting down")
             sys.exit()
         
         elif there_exists(['none'],query):
@@ -237,7 +191,7 @@ if __name__=="__main__":
         else:
             try:
                 res=app.query(query)
-                speak(next(res.results).text)
+                m2.speak(next(res.results).text)
             except:
                 print("Internet Connection Error")
 
