@@ -33,7 +33,7 @@ def greet():
     m2.speak("I am jarvis sir. How may I help you.")
 
 if __name__=="__main__":
-    greet()
+    # greet()
     """Logic for execution task based on query"""
     while(True):
         query=m2.takeCommand().lower()
@@ -80,12 +80,27 @@ if __name__=="__main__":
             os.startfile(os.path.join(music_dir,songs[indx]))
 
         #play game
-        elif there_exists(['would like to play some games','want to play games','play games','open games','play game','open game'],query):
-            m2.speak("We have only one game right now")
+        elif there_exists(['would like to play some games','play some games','would like to play some game','want to play some games','want to play game','want to play games','play games','open games','play game','open game'],query):
+            m2.speak("We have 2 games right now.")
+            print('1. ',end='')
             m2.speak("Stone Paper Scissor")
-            m2.speak("opening stone paper scissor")
-            SPS.start()
-
+            print('2. ',end='')
+            m2.speak("Guess the number")
+            m2.speak("Tell us your choice")
+            while(True):
+                query=m2.takeCommand().lower()
+                if ('stone' in query) or ('paper' in query):
+                    m2.speak("Opening stone paper scissor...")
+                    SPS.start()
+                    break
+                elif ('guess' in query) or ('number' in query):
+                    m2.speak("Opening Guess the number...")
+                    m7=mini.GuessTheNumber()
+                    m7.start()
+                    break
+                else:
+                    m2.speak("It did not match the option that we have. \nPlease say it again.")
+            
         #makig note
         elif there_exists(['make a note','take note','take a note','note it down','make note','remember this as note','open notepad and write'],query):
             m2.speak("What would you like to write down?")

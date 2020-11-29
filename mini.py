@@ -94,6 +94,31 @@ class PasswordGenerator:
                 break
             else:
                 SR.speak("Please say it again")
+        del SR
+
+class GuessTheNumber:
+    def start(self):
+        n=random.randint(1,10)
+        SR=SpeakRecog()
+        attempt=0
+        SR.speak("Guess a number between 1 to 10. \nTo become winner of the game you need to guess the number within 3 attempts.")
+        while(True):
+            guess=int(input("Enter number: "))
+            if guess<n:
+                SR.speak("Your guess was low.")
+            elif guess>n:
+                SR.speak("Your guess was high")
+            elif guess==n:
+                SR.speak("yep you got it.")
+                break
+            else:
+                SR.speak("Invalid data. Please enter right data.")
+            attempt+=1
+        if attempt>=3:
+            print(f"Your attempts= {attempt}")
+            SR.speak("Looser. \n Good luck next time")
+        else:
+            SR.speak("Congratulations. You are winner of the game.")
 
 class VoiceRecorer:
     def Record(self):
@@ -111,3 +136,4 @@ class VoiceRecorer:
         write("Recording-"+str(datetime.datetime.now()).replace(':','-')+".wav",fs,record_voice)
         SR.speak("Voice is recorded in \'Recordings\' folder.")
         os.chdir(a)
+        del SR
