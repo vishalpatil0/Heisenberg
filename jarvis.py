@@ -33,7 +33,7 @@ def greet():
     m2.speak("I am jarvis sir. How may I help you.")
 
 if __name__=="__main__":
-    # greet()
+    greet()
     """Logic for execution task based on query"""
     while(True):
         query=m2.takeCommand().lower()
@@ -156,6 +156,10 @@ if __name__=="__main__":
             m2.takeSS()
             m2.speak('Captured screenshot is saved in Screenshots folder.')
 
+        #voice recorder
+        elif there_exists(['record my voice','start voice recorder','voice recorder'],query):
+            m4=mini.VoiceRecorer()
+            m4.Record()
         # elif there_exists(["plus","minus","multiply","divide","power","+","-","*","/"],query):
         #     opr = query.split()[1]
 

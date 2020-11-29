@@ -1,6 +1,8 @@
 import datetime,subprocess,os,pyautogui,string,random
 import pyttsx3
 import speech_recognition as sr
+import sounddevice
+from scipy.io.wavfile import write
 
 class SpeakRecog:
     engine=pyttsx3.init('sapi5')
@@ -18,7 +20,7 @@ class SpeakRecog:
     volume = engine.getProperty('volume')           #getting to know current volume level (min=0 and max=1)
     # print(volume)                                 #printing current volume level
     engine.setProperty('volume', 1.0)               # setting up volume level  between 0 and 1
-    
+
     def speak(self,audio):
         """It speaks the audio"""
         print(audio)
@@ -49,6 +51,7 @@ class SpeakRecog:
             return 'None'
         return query
 
+
 class note:
     def Note(self,data):
         date=datetime.datetime.now()
@@ -71,7 +74,7 @@ class screenshot:
         os.chdir(a+'\Screenshots')
         date=datetime.datetime.now()
         img_captured.save('screenshot-'+str(date).replace(':','-')+'.png')
-        os.chdir(a)  
+        os.chdir(a)
 
 class PasswordGenerator:
     def givePSWD(self):
@@ -84,10 +87,27 @@ class PasswordGenerator:
                 return "Your Password is = "+"".join(random.sample(string.ascii_letters,7))
                 break
             elif ('average' in query):
-                return "Your Password is = "+"".join(random.sample(string.ascii_letters+string.digits,7))
+                return "Your Password is = "+"".join(random.sample(string.ascii_letters+string.digits,10))
                 break
             elif ('strong' in query):
-                return "Your Password is = "+"".join(random.sample(string.ascii_letters+string.digits+string.punctuation,7))
+                return "Your Password is = "+"".join(random.sample(string.ascii_letters+string.digits+string.punctuation,13))
                 break
             else:
-                SR.speak("Please say it again")        
+                SR.speak("Please say it again")
+
+class VoiceRecorer:
+    def Record(self):
+        SR=SpeakRecog()
+        SR.speak("This recording is of 10 seconds.")
+        fs=44100
+        second=10
+        print("Recording.....")
+        record_voice=sounddevice.rec(int(second * fs),samplerate=fs,channels=2)
+        sounddevice.wait()
+        a=os.getcwd()
+        if not os.path.exists("Recordings"):
+            os.mkdir("Recordings")
+        os.chdir(a+'\Recordings')
+        write("Recording-"+str(datetime.datetime.now()).replace(':','-')+".wav",fs,record_voice)
+        SR.speak("Voice is recorded in \'Recordings\' folder.")
+        os.chdir(a)

@@ -20,6 +20,7 @@ pip install wheel
 pip install google-api-python-client
 pip install monotonic
 pip install SpeechRecognition
+pip install scipy
 ```
 For installation of pyaudio
 ```bash
