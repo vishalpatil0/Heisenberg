@@ -86,11 +86,13 @@ if __name__=="__main__":
 
         #play game
         elif there_exists(['would like to play some games','play some games','would like to play some game','want to play some games','want to play game','want to play games','play games','open games','play game','open game'],query):
-            SR.speak("We have 2 games right now.")
+            SR.speak("We have 3 games right now.")
             print('1. ',end='')
             SR.speak("Stone Paper Scissor")
             print('2. ',end='')
             SR.speak("Guess the number")
+            print('3. ',end='')
+            SR.speak("Snake")
             SR.speak("Tell us your choice")
             while(True):
                 query=SR.takeCommand().lower()
@@ -102,6 +104,11 @@ if __name__=="__main__":
                     SR.speak("Opening Guess the number...")
                     m7=mini.GuessTheNumber()
                     m7.start()
+                    break
+                elif ('snake' in query):
+                    SR.speak("Opening snake game...")
+                    import Snake
+                    Snake.start()
                     break
                 else:
                     SR.speak("It did not match the option that we have. \nPlease say it again.")
