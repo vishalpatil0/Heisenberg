@@ -5,9 +5,12 @@ import sounddevice
 from scipy.io.wavfile import write
 from tkinter import filedialog
 from tkinter import *
+from tkinter.ttk import *
+import pyperclip
 from ttkthemes import themed_tk as tkth
 from tkinter import ttk
 import tkinter.scrolledtext as scrolledtext
+from functools import partial
 
 class SpeakRecog:
     engine=pyttsx3.init('sapi5')
@@ -60,6 +63,39 @@ class SpeakRecog:
             return 'None'
         return query
 
+class PasswordGenerator:
+    def action(self,pswd):
+        pyperclip.copy(pswd)
+    def showpswd(self,data,pswd):
+        root=Tk()
+        style = Style()
+        style.configure('W.TButton',font=('calibri', 10, 'bold'),foreground ='purple',borderwidth ='4',background="pink")
+        root.geometry("320x80")
+        root.eval('tk::PlaceWindow . center')
+        label1=Label(root,text=data,font=("comicsansms",9,'bold')).pack()
+        button1=Button(root,text='Copy to clipboard',style = 'W.TButton',command=partial(self.action,pswd)).pack(pady=20)
+        root.resizable(0,0)
+        root.mainloop()
+        del root
+    def givePSWD(self):
+        SR=SpeakRecog()
+        SR.speak("What type of password you want?")
+        print("\nPassword Level we have:-\n\nPoor Level\nAverage Level\nStrong Level\n")
+        while(True):
+            query=SR.takeCommand().lower()
+            if ('poor' in query):
+                self.showpswd("Your Password is : "+"".join(random.sample(string.ascii_letters,7)),"".join(random.sample(string.ascii_letters,7)))
+                break
+            elif ('average' in query):
+                self.showpswd("Your Password is : "+"".join(random.sample(string.ascii_letters+string.digits,10)),"".join(random.sample(string.ascii_letters+string.digits,10)))
+                break
+            elif ('strong' in query):
+                self.showpswd("Your Password is : "+"".join(random.sample(string.ascii_letters+string.digits+string.punctuation,13)),"".join(random.sample(string.ascii_letters+string.digits+string.punctuation,13)))
+                break
+            else:
+                SR.speak("Please say it again")
+        del SR
+        
 class TextSpeech:
     def txtspk(self):
         SR=SpeakRecog()
@@ -79,22 +115,22 @@ class TextSpeech:
         except FileNotFoundError as e:
             pass
 
-    root=tkth.ThemedTk()
-    root.get_themes()
-    root.set_theme("radiance")
-    root.resizable(0,0)
-    root.configure(background='white')
-    root.title("Text to Speech")
-    #root widget
-    text=scrolledtext.ScrolledText(root,width=30,height=10,wrap=WORD,padx=10,pady=10,borderwidth=5,relief=RIDGE)
-    text.grid(row=0,columnspan=3)
     def __init__(self):
+        self.root=tkth.ThemedTk()
+        self.root.get_themes()
+        self.root.set_theme("radiance")
+        self.root.resizable(0,0)
+        self.root.configure(background='white')
+        self.root.title("Text to Speech")
+        #root widget
+        self.text=scrolledtext.ScrolledText(self.root,width=30,height=10,wrap=WORD,padx=10,pady=10,borderwidth=5,relief=RIDGE)
+        self.text.grid(row=0,columnspan=3)
         #buttons
-        listen_btn=ttk.Button(self.root,text="Listen",width=7,command=self.txtspk).grid(row=2,column=0,ipadx=2)
-        clear_btn=ttk.Button(self.root,text="Clear",width=7,command=lambda:self.text.delete(1.0,END)).grid(row=2,column=1,ipadx=2)
-        open_btn=ttk.Button(self.root,text="Open",width=7,command=self.opentxt).grid(row=2,column=2,ipadx=2)
+        self.listen_btn=ttk.Button(self.root,text="Listen",width=7,command=self.txtspk).grid(row=2,column=0,ipadx=2)
+        self.clear_btn=ttk.Button(self.root,text="Clear",width=7,command=lambda:self.text.delete(1.0,END)).grid(row=2,column=1,ipadx=2)
+        self.open_btn=ttk.Button(self.root,text="Open",width=7,command=self.opentxt).grid(row=2,column=2,ipadx=2)
         self.root.mainloop()
-
+    
 class note:
     def Note(self,data):
         date=datetime.datetime.now()
@@ -118,26 +154,6 @@ class screenshot:
         date=datetime.datetime.now()
         img_captured.save('screenshot-'+str(date).replace(':','-')+'.png')
         os.chdir(a)
-
-class PasswordGenerator:
-    def givePSWD(self):
-        SR=SpeakRecog()
-        SR.speak("What type of password you want")
-        print("\nPassword Level we have:-\n\nPoor Level\nAverage Level\nStrong Level\n")
-        while(True):
-            query=SR.takeCommand().lower()
-            if ('poor' in query):
-                return "Your Password is = "+"".join(random.sample(string.ascii_letters,7))
-                break
-            elif ('average' in query):
-                return "Your Password is = "+"".join(random.sample(string.ascii_letters+string.digits,10))
-                break
-            elif ('strong' in query):
-                return "Your Password is = "+"".join(random.sample(string.ascii_letters+string.digits+string.punctuation,13))
-                break
-            else:
-                SR.speak("Please say it again")
-        del SR
 
 class GuessTheNumber:
     def start(self):

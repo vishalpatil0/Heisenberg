@@ -170,10 +170,10 @@ if __name__=="__main__":
             break
 
         #password generator
-        elif there_exists(['suggest me a password','password suggestion please','i want a password'],query):
+        elif there_exists(['suggest me a password','password suggestion','i want a password'],query):
             m3=mini.PasswordGenerator()
-            print(m3.givePSWD())
-
+            m3.givePSWD()
+            del m3
         #screeshot
         elif there_exists(['take screenshot','take a screenshot','screenshot please','capture my screen'],query):
             SR.speak("Taking screenshot")
