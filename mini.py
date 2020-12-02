@@ -64,8 +64,6 @@ class TextSpeech:
         SR.speak(g)
         del SR
 
-t=TextSpeech()
-t.speak()
 class note:
     def Note(self,data):
         date=datetime.datetime.now()

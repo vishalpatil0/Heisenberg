@@ -36,15 +36,15 @@ if __name__=="__main__":
     """Logic for execution task based on query"""
     while(True):
         query=m2.takeCommand().lower()
-        
-        #wikipedia search 
+
+        #wikipedia search
         if there_exists(['wikipedia'],query):
             m2.speak("Searching wikipedia....")
             query=query.replace("wikipedia","")
             results=wikipedia.summary(query,sentences=2)
             m2.speak("According to wikipedia")
             m2.speak(results)
-           
+
         elif there_exists(["what is your name","what's your name","tell me your name"],query):
             m2.speak("My name is Jarvis and i'm here to serve you.")
 
@@ -52,24 +52,29 @@ if __name__=="__main__":
         elif there_exists(['open youtube','access youtube'],query):
             m2.speak("Opening youtube")
             webbrowser.get(chrome_path).open("https://www.youtube.com")
+            break
         elif there_exists(['open google and search','google and search'],query):
             url='https://google.com/search?q='+query[query.find('for')+4:]
             webbrowser.get(chrome_path).open(url)
+            break
         elif there_exists(['open google'],query):
-            m2.speak("opening google")
+            m2.speak("Opening google")
             webbrowser.get(chrome_path).open("https://www.google.com")
+            break
         elif there_exists(['find location of'],query):
             url='https://google.nl/maps/place/'+query[query.find('of')+3:]+'/&amp'
             webbrowser.get(chrome_path).open(url)
+            break
         elif there_exists(["what is my exact location","What is my location","my current location"],query):
             url = "https://www.google.com/maps/search/Where+am+I+?/"
             webbrowser.get().open(url)
+            break
         elif there_exists(["where am i"],query):
             Ip_info = requests.get('https://api.ipdata.co?api-key=test').json()
             loc = Ip_info['region']
             m2.speak(f"You must be somewhere in {loc}")
 
-        #play music 
+        #play music
         elif there_exists(['play music'],query):
             m2.speak("Playing musics")
             music_dir='D:\\Musics\\vishal'
@@ -77,6 +82,7 @@ if __name__=="__main__":
             # print(songs)
             indx=random.randint(0,50)
             os.startfile(os.path.join(music_dir,songs[indx]))
+            break
 
         #play game
         elif there_exists(['would like to play some games','play some games','would like to play some game','want to play some games','want to play game','want to play games','play games','open games','play game','open game'],query):
@@ -99,7 +105,7 @@ if __name__=="__main__":
                     break
                 else:
                     m2.speak("It did not match the option that we have. \nPlease say it again.")
-            
+
         #makig note
         elif there_exists(['make a note','take note','take a note','note it down','make note','remember this as note','open notepad and write'],query):
             m2.speak("What would you like to write down?")
@@ -107,6 +113,7 @@ if __name__=="__main__":
             n=mini.note()
             n.Note(data)
             m2.speak("I have a made a note of that.")
+            break
 
         #flipping coin
         elif there_exists(["toss a coin","flip a coin","toss"],query):
@@ -127,36 +134,40 @@ if __name__=="__main__":
         elif there_exists(['open chrome'],query):
             m2.speak("Opening chrome")
             os.startfile(r'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe')
-            time.sleep(5)
+            break
         elif there_exists(['open notepad plus plus','open notepad++','open notepad ++'],query):
             m2.speak('Opening notepad++')
             os.startfile(r'C:\Program Files\Notepad++\notepad++.exe')
-            time.sleep(3)
+            break
         elif there_exists(['open notepad','start notepad'],query):
             m2.speak('Opening notepad')
             os.startfile(r'C:\Windows\notepad.exe')
-            time.sleep(3)
+            break
         elif there_exists(['open code','open visual studio ','open vs code'],query):
             m2.speak("Opeining vs code")
             codepath=r"C:\Users\Vishal\AppData\Local\Programs\Microsoft VS Code\Code.exe"
             os.startfile(codepath)
-            time.sleep(4)
+            break
         elif there_exists(['open file manager','file manager','open my computer','my computer','open file explorer','file explorer','open this pc','this pc'],query):
             m2.speak("Opening File Explorer")
             os.startfile("C:\Windows\explorer.exe")
-            time.sleep(3)
+            break
         elif there_exists(['powershell'],query):
-            m2.speak("opening powershell")
+            m2.speak("Opening powershell")
             os.startfile(r'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe')
-            time.sleep(4)
+            break
+        elif there_exists(['cmd','command prompt','command prom','commandpromt',],query):
+            m2.speak("Opening command prompt")
+            os.startfile(r'C:\Windows\System32\cmd.exe')
+            break
         elif there_exists(['whatsapp'],query):
-            m2.speak("opening whatsApp")
+            m2.speak("Opening whatsApp")
             os.startfile(r'C:\Users\Vishal\AppData\Local\WhatsApp\WhatsApp.exe')
-            time.sleep(7)
+            break
         elif there_exists(['open vlc','vlc media player','vlc player'],query):
             m2.speak("Opening VLC media player")
             os.startfile(r"C:\Program Files\VideoLAN\VLC\vlc.exe")
-            time.sleep(5)
+            break
 
         #password generator
         elif there_exists(['suggest me a password','password suggestion please','i want a password'],query):
@@ -175,7 +186,7 @@ if __name__=="__main__":
             m4=mini.VoiceRecorer()
             m4.Record()
             del m4
-        
+
         #text to speech conversion
         elif there_exists(['text to speech','convert my notes to voice'],query):
             m4=mini.TextSpeech()
@@ -208,12 +219,12 @@ if __name__=="__main__":
                 m2.speak(next(res.results).text)
             except:
                 print("Internet Connection Error")
-            
+
         #shutting down system
         elif there_exists(['exit','quit','shutdown','shut up','goodbye','shut down'],query):
             m2.speak("shutting down")
             sys.exit()
-        
+
         elif there_exists(['none'],query):
             pass
         #it will give online results for the query
@@ -230,4 +241,3 @@ if __name__=="__main__":
 
         else:
             m2.speak("Sorry it did not match with any commands that i'm registered with. Please say it again.")
-
