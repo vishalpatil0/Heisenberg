@@ -5,6 +5,9 @@ import sounddevice
 from scipy.io.wavfile import write
 from tkinter import filedialog
 from tkinter import *
+from ttkthemes import themed_tk as tkth
+from tkinter import ttk
+import tkinter.scrolledtext as scrolledtext
 
 class SpeakRecog:
     engine=pyttsx3.init('sapi5')
@@ -54,16 +57,32 @@ class SpeakRecog:
         return query
 
 class TextSpeech:
-    def speak(self):
-        root=Tk()
-        root.withdraw()
-        file_path=filedialog.askopenfilename(initialdir = "/",title="Select file",filetypes=(('text file',"*.txt"),("All files", "*.*")))
-        with open(file_path,'r') as f:
-            g=f.read()
-        SR=SpeakRecog()
-        SR.speak(g)
-        del SR
+    def speakText(self):
+        root=tkth.ThemedTk()
+        root.get_themes()
+        root.set_theme("radiance")
+        root.resizable(0,0)
+        root.configure(background='white')
+        root.title("Text to Speech")
+        #root widget
+        text=scrolledtext.ScrolledText(root,width=30,height=10,wrap=WORD,padx=10,pady=10,borderwidth=5,relief=RIDGE)
+        text.grid(row=0,columnspan=3)
+        #buttons
+        listen_btn=ttk.Button(root,text="Listen",width=7).grid(row=2,column=0,ipadx=2)
+        clear_btn=ttk.Button(root,text="Clear",width=7,command=lambda:text.delete(1.0,END)).grid(row=2,column=1,ipadx=2)
+        open_btn=ttk.Button(root,text="Open",width=7).grid(row=2,column=2,ipadx=2)
+        root.mainloop()
+        # root=Tk()
+        # root.withdraw()
+        # file_path=filedialog.askopenfilename(initialdir = "/",title="Select file",filetypes=(('text file',"*.txt"),("All files", "*.*")))
+        # with open(file_path,'r') as f:
+        #     g=f.read()
+        # SR=SpeakRecog()
+        # SR.speak(g)
+        # del SR
 
+a=TextSpeech()
+a.speakText()
 class note:
     def Note(self,data):
         date=datetime.datetime.now()
