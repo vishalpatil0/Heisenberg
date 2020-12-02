@@ -53,27 +53,32 @@ class SpeakRecog:
         try:
             print("Recognizing...")
             query= recog.recognize_google(audio)
-            print(f"User said: {query}\n")
+            print(f"You: {query}\n")
         except Exception as e:
             # print(e)
             print("Say that again please...")
             return 'None'
         return query
 
-class TextSpeech():
+class TextSpeech:
     def txtspk(self):
         SR=SpeakRecog()
         SR.nonPrintSpeak(self.text.get(1.0,END))
         del SR
     def opentxt(self):
-        file_path=filedialog.askopenfilename(initialdir = "/",title="Select file",filetypes=(('text file',"*.txt"),("All files", "*.*")))
-        with open(file_path,'r') as f:
-            g=f.read()
-        self.text.insert(INSERT,g)
-        self.text.update()
-        SR=SpeakRecog()
-        SR.nonPrintSpeak(g)
-        del SR
+        try:
+            file_path=filedialog.askopenfilename(initialdir =r"C:\Users\Vishal\Documents\Projects or important programs\jarvis\Notes",title="Select file",filetypes=(('text file',"*.txt"),("All files", "*.*")))
+            with open(file_path,'r') as f:
+                g=f.read()
+            self.text.delete(1.0,END)
+            self.text.insert(INSERT,g)
+            self.text.update()
+            SR=SpeakRecog()
+            SR.nonPrintSpeak(g)
+            del SR
+        except FileNotFoundError as e:
+            pass
+
     root=tkth.ThemedTk()
     root.get_themes()
     root.set_theme("radiance")
