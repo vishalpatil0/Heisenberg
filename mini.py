@@ -28,10 +28,24 @@ class SpeakRecog:
     volume = engine.getProperty('volume')           #getting to know current volume level (min=0 and max=1)
     # print(volume)                                 #printing current volume level
     engine.setProperty('volume', 1.0)               # setting up volume level  between 0 and 1
-
+    scrollable_text=None
+    def STS(self,scrollable_text):
+        '''This is scrollable text sette '''
+        self.scrollable_text=scrollable_text
+    def updating_ST(self,data):
+        self.scrollable_text.configure(state='normal')
+        self.scrollable_text.insert('end',data+'\n')
+        self.scrollable_text.configure(state='disabled')
+        self.scrollable_text.see('end')
+        self.scrollable_text.update()
+    def scrollable_text_clearing(self):
+        self.scrollable_text.configure(state='normal')
+        self.scrollable_text.delete(1.0,'end')
+        self.scrollable_text.configure(state='disabled')
+        self.scrollable_text.update()
     def speak(self,audio):
         """It speaks the audio"""
-        print(audio)
+        self.updating_ST(audio)
         self.engine.say(audio)
         # engine.save_to_file('Hello World', 'test.mp3')
         self.engine.runAndWait()
@@ -47,19 +61,19 @@ class SpeakRecog:
         # mic=Microphone()
         with sr.Microphone() as source:
             #r.adjust_for_ambient_noise(source)
-            print("Listening....")
+            self.updating_ST("Listening...")
             recog.pause_threshold = 1
             # r.energy_threshold = 45.131829621150224
             # print(sr.Microphone.list_microphone_names())
             #print(r.energy_threshold)
             audio=recog.listen(source)
         try:
-            print("Recognizing...")
+            self.updating_ST("Recognizing...")
             query= recog.recognize_google(audio)
-            print(f"You: {query}\n")
+            self.updating_ST(f"You: {query}\n")
         except Exception as e:
             # print(e)
-            print("Say that again please...")
+            self.updating_ST("Say that again please...")
             return 'None'
         return query
 
@@ -77,8 +91,9 @@ class PasswordGenerator:
         root.resizable(0,0)
         root.mainloop()
         del root
-    def givePSWD(self):
+    def givePSWD(self,scrollable_text):
         SR=SpeakRecog()
+        SR.STS(scrollable_text)
         SR.speak("What type of password you want?")
         print("\nPassword Level we have:-\n\nPoor Level\nAverage Level\nStrong Level\n")
         while(True):

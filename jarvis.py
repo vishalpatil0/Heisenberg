@@ -32,20 +32,11 @@ def greet():
     elif hour>18 and hour<21:
         SR.speak("Good Evening!")
     else:
-        scrollabel_text.configure(state='normal')
-        scrollabel_text.delete(1.0,'end')
-        scrollabel_text.insert('end','It is a beautiful night.')
-        scrollabel_text.configure(state='disabled')
-        scrollabel_text.update()
         SR.speak("It is a beautiful night.")
-    scrollabel_text.configure(state='normal')
-    scrollabel_text.delete(1.0,'end')
-    scrollabel_text.insert('end',"I am jarvis sir. How may I help you.\na\nb\nc\nd\ne")
-    scrollabel_text.configure(state='disabled')
-    scrollabel_text.update()
     SR.speak("I am jarvis sir. How may I help you.")
 
 def mainframe():
+    SR.scrollable_text_clearing()
     greet()
     """Logic for execution task based on query"""
     while(True):
@@ -193,7 +184,7 @@ def mainframe():
         #password generator
         elif there_exists(['suggest me a password','password suggestion','i want a password'],query):
             m3=mini.PasswordGenerator()
-            m3.givePSWD()
+            m3.givePSWD(scrollable_text)
             del m3
         #screeshot
         elif there_exists(['take screenshot','take a screenshot','screenshot please','capture my screen'],query):
@@ -270,10 +261,11 @@ if __name__=="__main__":
     # root.set_theme("winnative")
     root.geometry('900x500+230+80')
     root.resizable(0,0)
-    scrollabel_text=scrolledtext.ScrolledText(root,state='disabled',height=5,width=50,relief='sunken',bd=5)
-    scrollabel_text.place(x=350,y=180)
-    Listen_Button=tk.Button(root,text="Listen",command=greet)
+    scrollable_text=scrolledtext.ScrolledText(root,state='disabled',height=5,width=50,relief='sunken',bd=5)
+    scrollable_text.place(x=350,y=180)
+    Listen_Button=tk.Button(root,text="Listen",command=mainframe)
     Listen_Button.place(x=600,y=280)
+    SR.STS(scrollable_text)
     root.mainloop()
     
     
