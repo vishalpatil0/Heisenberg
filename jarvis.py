@@ -2,10 +2,14 @@ import datetime,wikipedia,webbrowser,os,random,requests,pyautogui,playsound,subp
 import urllib.request,bs4 as bs,sys
 import mini,wolframalpha
 import StonePaperScissor as SPS
+from ttkthemes import themed_tk
+from tkinter import ttk
+import tkinter as tk
+from tkinter import scrolledtext
 
+"""Setting up objects"""
 SR=mini.SpeakRecog()    #Speak and Recognition class instance
 
-"""Setting variables"""
 try:
     app=wolframalpha.Client("JPK4EE-L7KR3XWP9A")
 except Exception as e:
@@ -28,11 +32,21 @@ def greet():
     elif hour>18 and hour<21:
         SR.speak("Good Evening!")
     else:
+        scrollabel_text.configure(state='normal')
+        scrollabel_text.delete(1.0,'end')
+        scrollabel_text.insert('end','It is a beautiful night.')
+        scrollabel_text.configure(state='disabled')
+        scrollabel_text.update()
         SR.speak("It is a beautiful night.")
+    scrollabel_text.configure(state='normal')
+    scrollabel_text.delete(1.0,'end')
+    scrollabel_text.insert('end',"I am jarvis sir. How may I help you.\na\nb\nc\nd\ne")
+    scrollabel_text.configure(state='disabled')
+    scrollabel_text.update()
     SR.speak("I am jarvis sir. How may I help you.")
 
-if __name__=="__main__":
-    # greet()
+def mainframe():
+    greet()
     """Logic for execution task based on query"""
     while(True):
         query=SR.takeCommand().lower()
@@ -249,3 +263,17 @@ if __name__=="__main__":
 
         else:
             SR.speak("Sorry it did not match with any commands that i'm registered with. Please say it again.")
+
+if __name__=="__main__":
+    #tkinter code
+    root=themed_tk.ThemedTk()
+    # root.set_theme("winnative")
+    root.geometry('900x500+230+80')
+    root.resizable(0,0)
+    scrollabel_text=scrolledtext.ScrolledText(root,state='disabled',height=5,width=50,relief='sunken',bd=5)
+    scrollabel_text.place(x=350,y=180)
+    Listen_Button=tk.Button(root,text="Listen",command=greet)
+    Listen_Button.place(x=600,y=280)
+    root.mainloop()
+    
+    
