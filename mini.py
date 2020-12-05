@@ -4,11 +4,10 @@ import speech_recognition as sr
 import sounddevice
 from scipy.io.wavfile import write
 from tkinter import filedialog
-from tkinter import *
-from tkinter.ttk import *
+import tkinter as tk
+from tkinter import ttk
 import pyperclip
 from ttkthemes import themed_tk as tkth
-from tkinter import ttk
 import tkinter.scrolledtext as scrolledtext
 from functools import partial
 
@@ -81,13 +80,13 @@ class PasswordGenerator:
     def action(self,pswd):
         pyperclip.copy(pswd)
     def showpswd(self,data,pswd):
-        root=Tk()
-        style = Style()
+        root=tk.Toplevel()
+        style = ttk.Style()
         style.configure('W.TButton',font=('calibri', 10, 'bold'),foreground ='purple',borderwidth ='4',background="pink")
-        root.geometry("320x80")
-        root.eval('tk::PlaceWindow . center')
-        label1=Label(root,text=data,font=("comicsansms",9,'bold')).pack()
-        button1=Button(root,text='Copy to clipboard',style = 'W.TButton',command=partial(self.action,pswd)).pack(pady=20)
+        root.geometry("320x80+540+270")
+        # root.eval('tk::PlaceWindow . center')     #this only works for Tk() instance not for Toplevel() instance
+        label1=ttk.Label(root,text=data,font=("comicsansms",9,'bold')).pack()
+        button1=ttk.Button(root,text='Copy to clipboard',style = 'W.TButton',command=partial(self.action,pswd)).pack(pady=20)
         root.resizable(0,0)
         root.mainloop()
         del root
@@ -95,7 +94,7 @@ class PasswordGenerator:
         SR=SpeakRecog()
         SR.STS(scrollable_text)
         SR.speak("What type of password you want?")
-        print("\nPassword Level we have:-\n\nPoor Level\nAverage Level\nStrong Level\n")
+        SR.updating_ST("\nPassword Level we have:-\n\nPoor Level\nAverage Level\nStrong Level\n")
         while(True):
             query=SR.takeCommand().lower()
             if ('poor' in query):
@@ -114,20 +113,24 @@ class PasswordGenerator:
 class TextSpeech:
     def txtspk(self):
         SR=SpeakRecog()
-        SR.nonPrintSpeak(self.text.get(1.0,END))
+        SR.nonPrintSpeak(self.text.get(1.0,tk.END))
         del SR
     def opentxt(self):
+        self.root.focus_force()    
         try:
             file_path=filedialog.askopenfilename(initialdir =r"C:\Users\Vishal\Documents\Projects or important programs\jarvis\Notes",title="Select file",filetypes=(('text file',"*.txt"),("All files", "*.*")))
             with open(file_path,'r') as f:
                 g=f.read()
-            self.text.delete(1.0,END)
-            self.text.insert(INSERT,g)
+        
+            self.root.focus_force()    
+            self.text.delete(1.0,tk.END)
+            self.text.insert(tk.INSERT,g)
             self.text.update()
             SR=SpeakRecog()
             SR.nonPrintSpeak(g)
             del SR
         except FileNotFoundError as e:
+            self.root.focus_force()    
             pass
 
     def __init__(self):
@@ -138,12 +141,13 @@ class TextSpeech:
         self.root.configure(background='white')
         self.root.title("Text to Speech")
         #root widget
-        self.text=scrolledtext.ScrolledText(self.root,width=30,height=10,wrap=WORD,padx=10,pady=10,borderwidth=5,relief=RIDGE)
+        self.text=scrolledtext.ScrolledText(self.root,width=30,height=10,wrap=tk.WORD,padx=10,pady=10,borderwidth=5,relief=tk.RIDGE)
         self.text.grid(row=0,columnspan=3)
         #buttons
         self.listen_btn=ttk.Button(self.root,text="Listen",width=7,command=self.txtspk).grid(row=2,column=0,ipadx=2)
-        self.clear_btn=ttk.Button(self.root,text="Clear",width=7,command=lambda:self.text.delete(1.0,END)).grid(row=2,column=1,ipadx=2)
+        self.clear_btn=ttk.Button(self.root,text="Clear",width=7,command=lambda:self.text.delete(1.0,tk.END)).grid(row=2,column=1,ipadx=2)
         self.open_btn=ttk.Button(self.root,text="Open",width=7,command=self.opentxt).grid(row=2,column=2,ipadx=2)
+        self.root.focus_set()
         self.root.mainloop()
     
 class note:
@@ -171,9 +175,10 @@ class screenshot:
         os.chdir(a)
 
 class GuessTheNumber:
-    def start(self):
+    def start(self,scrollable_text):
         n=random.randint(1,10)
         SR=SpeakRecog()
+        SR.STS(scrollable_text)
         attempt=0
         SR.speak("Guess a number between 1 to 10. \nTo become winner of the game you need to guess the number within 3 attempts.")
         while(True):
@@ -196,12 +201,13 @@ class GuessTheNumber:
         del SR
 
 class VoiceRecorer:
-    def Record(self):
+    def Record(self,scrollable_text):
         SR=SpeakRecog()
+        SR.STS(scrollable_text)
         SR.speak("This recording is of 10 seconds.")
         fs=44100
         second=10
-        print("Recording.....")
+        SR.updating_ST("Recording.....")
         record_voice=sounddevice.rec(int(second * fs),samplerate=fs,channels=2)
         sounddevice.wait()
         a=os.getcwd()
