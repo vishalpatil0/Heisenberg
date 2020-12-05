@@ -1,7 +1,6 @@
 import datetime,wikipedia,webbrowser,os,random,requests,pyautogui,playsound,subprocess,time
 import urllib.request,bs4 as bs,sys
 import mini,wolframalpha
-import StonePaperScissor as SPS
 from ttkthemes import themed_tk
 from tkinter import ttk
 import tkinter as tk
@@ -33,11 +32,11 @@ def greet():
         SR.speak("Good Evening!")
     else:
         SR.speak("It is a beautiful night.")
-    SR.speak("I am jarvis sir. How may I help you.")
+    SR.speak("Myself Heisenberg. How may I help you.")
 
 def mainframe():
     SR.scrollable_text_clearing()
-    # greet()
+    greet()
     """Logic for execution task based on query"""
     try:
         while(True):
@@ -52,7 +51,7 @@ def mainframe():
                 SR.speak(results)
 
             elif there_exists(["what is your name","what's your name","tell me your name"],query):
-                SR.speak("My name is Jarvis and i'm here to serve you.")
+                SR.speak("My name is Heisenberg and i'm here to serve you.")
 
             #google, youtube and location
             elif there_exists(['open youtube','access youtube'],query):
@@ -93,19 +92,20 @@ def mainframe():
 
             #play game
             elif there_exists(['would like to play some games','play some games','would like to play some game','want to play some games','want to play game','want to play games','play games','open games','play game','open game'],query):
-                SR.speak("We have 3 games right now.")
-                print('1. ',end='')
+                SR.speak("We have 3 games right now.\n")
+                SR.updating_ST_No_newline('1.')
                 SR.speak("Stone Paper Scissor")
-                print('2. ',end='')
+                SR.updating_ST_No_newline('2.')
                 SR.speak("Guess the number")
-                print('3. ',end='')
+                SR.updating_ST_No_newline('3.')
                 SR.speak("Snake")
-                SR.speak("Tell us your choice")
+                SR.speak("\nTell us your choice:")
                 while(True):
                     query=SR.takeCommand().lower()
                     if ('stone' in query) or ('paper' in query):
                         SR.speak("Opening stone paper scissor...")
-                        SPS.start()
+                        sps=mini.StonePaperScissor()
+                        sps.start(scrollable_text)
                         break
                     elif ('guess' in query) or ('number' in query):
                         SR.speak("Opening Guess the number...")
@@ -242,8 +242,10 @@ def mainframe():
 
             elif there_exists(['none'],query):
                 pass
+            elif there_exists(['stop the flow','stop the execution','halt','halt the process','stop the process'],query):
+                SR.speak("Listening halted.")
+                break
             #it will give online results for the query
-
             elif there_exists(['search something for me','show me result for','show me results for','to do a little search','search mode'],query):
                 SR.speak('What you want me to search for?')
                 query=SR.takeCommand()
@@ -265,7 +267,8 @@ if __name__=="__main__":
         # root.set_theme("winnative")
         root.geometry('900x400+230+80')
         root.resizable(0,0)
-        scrollable_text=scrolledtext.ScrolledText(root,state='disabled',height=15,width=85,relief='sunken',bd=5)
+        root.title("Heisenberg")
+        scrollable_text=scrolledtext.ScrolledText(root,state='disabled',height=15,width=87,relief='sunken',bd=5)
         scrollable_text.place(x=90,y=10)
         Listen_Button=tk.Button(root,text="Listen",command=mainframe)
         Listen_Button.place(x=400,y=280)
