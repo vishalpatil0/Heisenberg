@@ -87,6 +87,8 @@ class PasswordGenerator:
         pyperclip.copy(pswd)
     def showpswd(self,data,pswd):
         root=tk.Toplevel()
+        root.title("Password Generator")
+        root.iconbitmap('PasswordGenerator.ico')
         style = ttk.Style()
         style.configure('W.TButton',font=('calibri', 10, 'bold'),foreground ='purple',borderwidth ='4',background="pink")
         root.geometry("320x80+540+270")
@@ -146,6 +148,7 @@ class TextSpeech:
         self.root.resizable(0,0)
         self.root.configure(background='white')
         self.root.title("Text to Speech")
+        self.root.iconbitmap('text_to_speech.ico')
         #root widget
         self.text=scrolledtext.ScrolledText(self.root,width=30,height=10,wrap=tk.WORD,padx=10,pady=10,borderwidth=5,relief=tk.RIDGE)
         self.text.grid(row=0,columnspan=3)

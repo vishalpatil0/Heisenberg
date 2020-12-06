@@ -1,13 +1,13 @@
 import datetime,wikipedia,webbrowser,os,random,requests,pyautogui,playsound,subprocess,time
 import urllib.request,bs4 as bs,sys
-import mini,wolframalpha
+import Annex,wolframalpha
 from ttkthemes import themed_tk
 from tkinter import ttk
 import tkinter as tk
 from tkinter import scrolledtext
 
 """Setting up objects"""
-SR=mini.SpeakRecog()    #Speak and Recognition class instance
+SR=Annex.SpeakRecog()    #Speak and Recognition class instance
 
 try:
     app=wolframalpha.Client("JPK4EE-L7KR3XWP9A")
@@ -104,12 +104,12 @@ def mainframe():
                     query=SR.takeCommand().lower()
                     if ('stone' in query) or ('paper' in query):
                         SR.speak("Opening stone paper scissor...")
-                        sps=mini.StonePaperScissor()
+                        sps=Annex.StonePaperScissor()
                         sps.start(scrollable_text)
                         break
                     elif ('guess' in query) or ('number' in query):
                         SR.speak("Opening Guess the number...")
-                        m7=mini.GuessTheNumber()
+                        m7=Annex.GuessTheNumber()
                         m7.start(scrollable_text)
                         break
                     elif ('snake' in query):
@@ -124,7 +124,7 @@ def mainframe():
             elif there_exists(['make a note','take note','take a note','note it down','make note','remember this as note','open notepad and write'],query):
                 SR.speak("What would you like to write down?")
                 data=SR.takeCommand()
-                n=mini.note()
+                n=Annex.note()
                 n.Note(data)
                 SR.speak("I have a made a note of that.")
                 break
@@ -185,27 +185,27 @@ def mainframe():
 
             #password generator
             elif there_exists(['suggest me a password','password suggestion','i want a password'],query):
-                m3=mini.PasswordGenerator()
+                m3=Annex.PasswordGenerator()
                 m3.givePSWD(scrollable_text)
                 del m3
             #screeshot
             elif there_exists(['take screenshot','take a screenshot','screenshot please','capture my screen'],query):
                 SR.speak("Taking screenshot")
-                SS=mini.screenshot()
+                SS=Annex.screenshot()
                 SS.takeSS()
                 SR.speak('Captured screenshot is saved in Screenshots folder.')
                 del SS
 
             #voice recorder
             elif there_exists(['record my voice','start voice recorder','voice recorder'],query):
-                VR=mini.VoiceRecorer()
+                VR=Annex.VoiceRecorer()
                 VR.Record(scrollable_text)
                 del VR
 
             #text to speech conversion
             elif there_exists(['text to speech','convert my notes to voice'],query):
                 SR.speak("Opening Text to Speech mode")
-                TS=mini.TextSpeech()
+                TS=Annex.TextSpeech()
                 del TS
             # elif there_exists(["plus","minus","multiply","divide","power","+","-","*","/"],query):
             #     opr = query.split()[1]
