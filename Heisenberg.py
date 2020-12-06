@@ -51,7 +51,7 @@ def mainframe():
                 SR.speak(results)
 
             elif there_exists(["what is your name","what's your name","tell me your name"],query):
-                SR.speak("My name is Heisenberg and i'm here to serve you.")
+                SR.speak("My name is Heisenberg and I'm here to serve you.")
 
             #google, youtube and location
             elif there_exists(['open youtube','access youtube'],query):
@@ -265,12 +265,13 @@ if __name__=="__main__":
         #tkinter code
         root=themed_tk.ThemedTk()
         # root.set_theme("winnative")
-        root.geometry('900x400+230+80')
+        root.geometry('745x325+300+150')
         root.resizable(0,0)
         root.title("Heisenberg")
+        root.iconbitmap('Heisenberg.ico')
         scrollable_text=scrolledtext.ScrolledText(root,state='disabled',height=15,width=87,relief='sunken',bd=5)
-        scrollable_text.place(x=90,y=10)
+        scrollable_text.place(x=10,y=10)
         Listen_Button=tk.Button(root,text="Listen",command=mainframe)
-        Listen_Button.place(x=400,y=280)
+        Listen_Button.place(x=350,y=275)
         SR.STS(scrollable_text)
         root.mainloop()
