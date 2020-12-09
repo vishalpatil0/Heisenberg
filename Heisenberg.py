@@ -5,6 +5,7 @@ from ttkthemes import themed_tk
 from tkinter import ttk
 import tkinter as tk
 from tkinter import scrolledtext
+from PIL import ImageTk,Image
 
 """Setting up objects"""
 SR=Annex.SpeakRecog()    #Speak and Recognition class instance
@@ -22,6 +23,9 @@ def there_exists(terms,query):
         if term in query:
             return True
 
+def CommandsList():
+    os.startfile('Commands List.txt')
+
 def greet():
     hour=int(datetime.datetime.now().hour)
     if hour<=4 and hour<12:
@@ -36,7 +40,7 @@ def greet():
 
 def mainframe():
     SR.scrollable_text_clearing()
-    greet()
+    # greet()
     """Logic for execution task based on query"""
     try:
         while(True):
@@ -264,14 +268,26 @@ def mainframe():
 if __name__=="__main__":
         #tkinter code
         root=themed_tk.ThemedTk()
-        # root.set_theme("winnative")
-        root.geometry('745x325+300+150')
+        root.set_theme("winnative")
+        root.geometry('745x360+300+150')
         root.resizable(0,0)
         root.title("Heisenberg")
         root.iconbitmap('Heisenberg.ico')
-        scrollable_text=scrolledtext.ScrolledText(root,state='disabled',height=15,width=87,relief='sunken',bd=5)
+        root.configure(bg='#2c4557')
+        scrollable_text=scrolledtext.ScrolledText(root,state='disabled',height=15,width=87,relief='sunken',bd=5,wrap=tk.WORD,bg='#add8e6',fg='#8A2BE2')
         scrollable_text.place(x=10,y=10)
-        Listen_Button=tk.Button(root,text="Listen",command=mainframe)
-        Listen_Button.place(x=350,y=275)
+        mic_img=Image.open("Mic.png")
+        mic_img=mic_img.resize((55,55),Image.ANTIALIAS)
+        mic_img=ImageTk.PhotoImage(mic_img)
+        Speak_label=tk.Label(root,text="SPEAK:",fg="#FFD700",font='"Times New Roman" 12 ',borderwidth=0,bg='#2c4557')
+        Speak_label.place(x=250,y=300)
+        Listen_Button=tk.Button(root,image=mic_img,borderwidth=0,activebackground='#2c4557',bg='#2c4557',command=mainframe)
+        Listen_Button.place(x=330,y=280)
         SR.STS(scrollable_text)
+        myMenu=tk.Menu(root)
+        m1=tk.Menu(myMenu,tearoff=0) #tearoff=0 means the submenu can't be teared of from the window
+        m1.add_command(label='Commands List',command=CommandsList)
+        myMenu.add_cascade(label="Help",menu=m1)
+        myMenu.add_cascade(label="Settings")
+        root.config(menu=myMenu)
         root.mainloop()
