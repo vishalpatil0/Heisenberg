@@ -21,7 +21,7 @@ class SpeakRecog:
     """ VOICE RATE"""
     rate = engine.getProperty('rate')               # getting details of current speaking rate
     # print(rate)
-    engine.setProperty('rate', 170)                 # setting up new voice rate
+    engine.setProperty('rate', 180)                 # setting up new voice rate
 
     """VOLUME"""
     volume = engine.getProperty('volume')           #getting to know current volume level (min=0 and max=1)
@@ -182,33 +182,7 @@ class screenshot:
         date=datetime.datetime.now()
         img_captured.save('screenshot-'+str(date).replace(':','-')+'.png')
         os.chdir(a)
-
-class GuessTheNumber:
-    def start(self,scrollable_text):
-        n=random.randint(1,10)
-        SR=SpeakRecog()
-        SR.STS(scrollable_text)
-        attempt=0
-        SR.speak("Guess a number between 1 to 10. \nTo become winner of the game you need to guess the number within 3 attempts.")
-        while(True):
-            guess=int(input("Enter number: "))
-            if guess<n:
-                SR.speak("Your guess was low.")
-            elif guess>n:
-                SR.speak("Your guess was high")
-            elif guess==n:
-                SR.speak("yep you got it.")
-                break
-            else:
-                SR.speak("Invalid data. Please enter right data.")
-            attempt+=1
-        if attempt>=3:
-            print(f"Your attempts= {attempt}")
-            SR.speak("Looser. \n Good luck next time")
-        else:
-            SR.speak("Congratulations. You are winner of the game.")
-        del SR
-
+  
 class StonePaperScissor:
     def start(self,scrollable_text):
         SR=SpeakRecog()

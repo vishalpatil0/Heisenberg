@@ -6,6 +6,7 @@ from tkinter import ttk
 import tkinter as tk
 from tkinter import scrolledtext
 from PIL import ImageTk,Image
+import sqlite3
 
 """Setting up objects"""
 SR=Annex.SpeakRecog()    #Speak and Recognition class instance
@@ -26,21 +27,40 @@ def there_exists(terms,query):
 def CommandsList():
     os.startfile('Commands List.txt')
 
+def clearScreen():
+    SR.scrollable_text_clearing()
+
+def setting_window():
+    tp_level=tk.Toplevel()
+    tp_level.mainloop()
+
 def greet():
+    conn = sqlite3.connect('Heisenberg.db')
+    mycursor=conn.cursor()
     hour=int(datetime.datetime.now().hour)
     if hour<=4 and hour<12:
-        SR.speak("Good Morning!")
+        mycursor.execute('select sentences from goodmorning')
+        result=mycursor.fetchall()
+        SR.speak(random.choice(result)[0])
     elif hour>=12 and hour<18:
-        SR.speak("Good Afternoon!")
+        mycursor.execute('select sentences from goodafternoon')
+        result=mycursor.fetchall()
+        SR.speak(random.choice(result)[0])
     elif hour>=18 and hour<21:
-        SR.speak("Good Evening!")
+        mycursor.execute('select sentences from goodevening')
+        result=mycursor.fetchall()
+        SR.speak(random.choice(result)[0])
     else:
-        SR.speak("It is a beautiful night.")
+        mycursor.execute('select sentences from night')
+        result=mycursor.fetchall()
+        SR.speak(random.choice(result)[0])
+    conn.commit()
+    conn.close()
     SR.speak("Myself Heisenberg. How may I help you.")
 
 def mainframe():
     SR.scrollable_text_clearing()
-    # greet()
+    greet()
     """Logic for execution task based on query"""
     try:
         while(True):
@@ -96,12 +116,10 @@ def mainframe():
 
             #play game
             elif there_exists(['would like to play some games','play some games','would like to play some game','want to play some games','want to play game','want to play games','play games','open games','play game','open game'],query):
-                SR.speak("We have 3 games right now.\n")
+                SR.speak("We have 2 games right now.\n")
                 SR.updating_ST_No_newline('1.')
                 SR.speak("Stone Paper Scissor")
                 SR.updating_ST_No_newline('2.')
-                SR.speak("Guess the number")
-                SR.updating_ST_No_newline('3.')
                 SR.speak("Snake")
                 SR.speak("\nTell us your choice:")
                 while(True):
@@ -110,11 +128,6 @@ def mainframe():
                         SR.speak("Opening stone paper scissor...")
                         sps=Annex.StonePaperScissor()
                         sps.start(scrollable_text)
-                        break
-                    elif ('guess' in query) or ('number' in query):
-                        SR.speak("Opening Guess the number...")
-                        m7=Annex.GuessTheNumber()
-                        m7.start(scrollable_text)
                         break
                     elif ('snake' in query):
                         SR.speak("Opening snake game...")
@@ -147,6 +160,8 @@ def mainframe():
             elif there_exists(['the date'],query):
                 strDay=datetime.date.today().strftime("%B %d, %Y")
                 SR.speak(f"Today is {strDay}")
+            elif there_exists(['what day it is','what day is today','which day is today',"today's day name please"],query):
+                SR.speak(f"Today is {datetime.datetime.now().strftime('%A')}")
 
             #opening software applications
             elif there_exists(['open chrome'],query):
@@ -211,21 +226,26 @@ def mainframe():
                 SR.speak("Opening Text to Speech mode")
                 TS=Annex.TextSpeech()
                 del TS
-            # elif there_exists(["plus","minus","multiply","divide","power","+","-","*","/"],query):
-            #     opr = query.split()[1]
+            #shutting down system
+            elif there_exists(['exit','quit','shutdown','shut up','goodbye','shut down'],query):
+                SR.speak("shutting down")
+                sys.exit()
 
-            #     if opr == '+' or 'plus':
-            #         SR.speak(int(query.split()[0]) + int(query.split()[2]))
-            #     elif opr == '-' or 'minus':
-            #         SR.speak(int(query.split()[0]) - int(query.split()[2]))
-            #     elif opr == 'multiply' or 'x':
-            #         SR.speak(int(query.split()[0]) * int(query.split()[2]))
-            #     elif opr == 'divide' or '/':
-            #         SR.speak(int(query.split()[0]) / int(query.split()[2]))
-            #     elif opr == 'power' or '^':
-            #         SR.speak(int(query.split()[0]) ** int(query.split()[2]))
-            #     else:
-            #         SR.speak("Wrong Operator")
+            elif there_exists(['none'],query):
+                pass
+            elif there_exists(['stop the flow','stop the execution','halt','halt the process','stop the process','stop listening','stop the listening'],query):
+                SR.speak("Listening halted.")
+                break
+            #it will give online results for the query
+            elif there_exists(['search something for me','show me result for','show me results for','to do a little search','search mode','i want to search something'],query):
+                SR.speak('What you want me to search for?')
+                query=SR.takeCommand()
+                SR.speak(f"Showing results for {query}")
+                try:
+                    res=app.query(query)
+                    SR.speak(next(res.results).text)
+                except:
+                    print("Sorry, but there is a little problem while fetching the result.")
             elif there_exists(['temperature'],query):
                 try:
                     res=app.query(query)
@@ -237,28 +257,7 @@ def mainframe():
                     res=app.query(query)
                     SR.speak(next(res.results).text)
                 except:
-                    print("Internet Connection Error")
-
-            #shutting down system
-            elif there_exists(['exit','quit','shutdown','shut up','goodbye','shut down'],query):
-                SR.speak("shutting down")
-                sys.exit()
-
-            elif there_exists(['none'],query):
-                pass
-            elif there_exists(['stop the flow','stop the execution','halt','halt the process','stop the process'],query):
-                SR.speak("Listening halted.")
-                break
-            #it will give online results for the query
-            elif there_exists(['search something for me','show me result for','show me results for','to do a little search','search mode'],query):
-                SR.speak('What you want me to search for?')
-                query=SR.takeCommand()
-                SR.speak(f"Showing results for {query}")
-                try:
-                    res=app.query(query)
-                    SR.speak(next(res.results).text)
-                except:
-                    print("Sorry, but there is a little problem while fetching the result.")
+                    print("Internet Connection Error")   
 
             else:
                 SR.speak("Sorry it did not match with any commands that i'm registered with. Please say it again.")
@@ -274,7 +273,7 @@ if __name__=="__main__":
         root.title("Heisenberg")
         root.iconbitmap('Heisenberg.ico')
         root.configure(bg='#2c4557')
-        scrollable_text=scrolledtext.ScrolledText(root,state='disabled',height=15,width=87,relief='sunken',bd=5,wrap=tk.WORD,bg='#add8e6',fg='#8A2BE2')
+        scrollable_text=scrolledtext.ScrolledText(root,state='disabled',height=15,width=87,relief='sunken',bd=5,wrap=tk.WORD,bg='#add8e6',fg='#800000')
         scrollable_text.place(x=10,y=10)
         mic_img=Image.open("Mic.png")
         mic_img=mic_img.resize((55,55),Image.ANTIALIAS)
@@ -288,6 +287,7 @@ if __name__=="__main__":
         m1=tk.Menu(myMenu,tearoff=0) #tearoff=0 means the submenu can't be teared of from the window
         m1.add_command(label='Commands List',command=CommandsList)
         myMenu.add_cascade(label="Help",menu=m1)
-        myMenu.add_cascade(label="Settings")
+        myMenu.add_cascade(label="Settings",command=setting_window)
+        myMenu.add_cascade(label="Clear Screen",command=clearScreen)
         root.config(menu=myMenu)
         root.mainloop()

@@ -1,11 +1,41 @@
-1) Open File Explorer
+1) Search Mode/ search something for me/
 
-2) wikipedia (your search)
+2) Wikipedia (your search)
 
-3) toss a coin
+3) Toss a coin
 
-4) where am i?
+4) Where am i?
 
-5) take a note
+5) Take a note / Make a note
 
-6) capture my screen
+6) Capture my screen / Take a screen shot
+
+7) Ask him his name.
+
+8) Open -   youtube,google,file explorer, command prompt, chrome, etc.
+
+9) Open google search ---------
+
+10) find location of (city/country name)
+
+11) What is my exact/current location
+
+12) I want to play some games / i would like to play some games
+
+13) play music
+
+14) what is the date/ time
+
+15) suggest me a password/ password suggestion / i want a password
+
+16) voice reocorder/ record my voice
+
+17) open text to speech/ convert my notes to speech
+
+18) exit/ quit/ shutdown/ goodbye Heisenberg
+
+19) stop the flow/execution/process/listening 
+
+20) current temperature
+
+21) Voice Calculator
