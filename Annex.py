@@ -188,6 +188,7 @@ class screenshot:
         os.chdir(a+'\Screenshots')
         ImageName='screenshot-'+str(datetime.datetime.now()).replace(':','-')+'.png'
         img_captured.save(ImageName)
+        os.startfile(ImageName)
         os.chdir(a)
 
 class StonePaperScissor:
@@ -311,8 +312,9 @@ class camera:
             self.result = False
         self.videoCaptureObject.release()
         cv2.destroyAllWindows()
-        os.startfile(ImageName)
         os.chdir(a)
+        playsound.playsound("camera-shutter-click.mp3")
+        return "Camera\\"+self.ImageName
        
 class VoiceRecorer: 
     def Record(self,scrollable_text):

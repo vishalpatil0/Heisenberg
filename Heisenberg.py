@@ -112,10 +112,10 @@ def mainframe():
                 break
 
             #taking photo
-            elif there_exists(['take a photo','take a selfie','take my photo','take photo','take selfie','one photo please'],query):
+            elif there_exists(['take a photo','take a selfie','take my photo','take photo','take selfie','one photo please','click a photo'],query):
                 takephoto=Annex.camera()
-                playsound.playsound('camera-shutter-click.mp3')
-                takephoto.takePhoto()
+                Location=takephoto.takePhoto()
+                os.startfile(Location)
                 del takephoto
                 SR.speak("Captured picture is stored in Camera folder.")
 
