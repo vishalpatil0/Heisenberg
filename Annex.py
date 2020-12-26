@@ -6,14 +6,11 @@ from scipy.io.wavfile import write
 from tkinter import filedialog
 import tkinter as tk
 from tkinter import ttk
-import pyperclip
+import pyperclip,cv2,playsound
 from ttkthemes import themed_tk as tkth
 import tkinter.scrolledtext as scrolledtext
 from functools import partial
-import tkinter.messagebox as tmsg
-import sqlite3
-import cv2
-import playsound
+import tkinter.messagebox as tmsg,sqlite3
 
 class SpeakRecog:
     #database connection
@@ -29,7 +26,7 @@ class SpeakRecog:
     """ VOICE RATE"""
     rate = engine.getProperty('rate')               # getting details of current speaking rate
     # print(rate)
-    engine.setProperty('rate', 180)                 # setting up new voice rate
+    engine.setProperty('rate',mycursor.execute('select rate from speech_rate').fetchone()[0])                 # setting up new voice rate in words per minute
 
     """VOLUME"""   
     volume = engine.getProperty('volume')           #getting to know current volume level (min=0 and max=1)
@@ -257,31 +254,46 @@ class StonePaperScissor:
 
 class SettingWindow:
     def Apply(self):
-        value=int((self.volume_slider.get()))
+        #Database connection
         conn = sqlite3.connect('Heisenberg.db')
         mycursor=conn.cursor()
-        mycursor.execute('update volume set vol=?',(value,))
-        conn.commit()
-        conn.close()
-        # print(f"{value} type is {type(value)}")
-        tmsg.showinfo("Point to be noted.",f"Setting will be applied after reboot of this program.")
-        self.setting.destroy()
-        
+        Speech_Rate=self.speech_rate_text_box.get()
+        if not (Speech_Rate.isdigit()):
+            tmsg.showinfo("Error.",f"Please enter integers.")
+            self.setting.focus_force()
+        else:
+            mycursor.execute('update speech_rate set rate=?',(int(Speech_Rate),))
+            value=int((self.volume_slider.get()))
+            mycursor.execute('update volume set vol=?',(value,))
+            conn.commit()
+            conn.close()
+            # print(f"{value} type is {type(value)}")
+            tmsg.showinfo("Point to be noted.",f"Setting will be applied after reboot of this program.")
+            self.setting.destroy()
     def settingWindow(self,root):
-        self.setting=tk.Toplevel(root)
-        self.setting.title("Settings")
-        self.setting.iconbitmap('setting.ico')
-        self.setting.geometry("500x300+440+170")
-        self.volume=ttk.Label(self.setting,text='Volume: ',borderwidth=0,font=('"Times New Roman"')).place(x=3,y=17)
-        self.volume_slider=tk.Scale(self.setting,from_=0,to=10,orient=tk.HORIZONTAL)
-        self.volume_slider.place(x=70,y=0)
         #database connection
         conn = sqlite3.connect('Heisenberg.db')
         mycursor=conn.cursor()
+        self.setting=tk.Toplevel(root)
+        canvas=tk.Canvas(self.setting)
+        canvas.create_line(0,135,285,135)
+        canvas.create_line(0,138,285,138)
+        canvas.pack()
+        self.setting.title("Settings")
+        self.setting.iconbitmap('setting.ico')
+        self.setting.geometry("285x180+500+200")
+        self.setting.resizable(0,0)
+        self.volume=ttk.Label(self.setting,text="Heisenberg's Volume: ",borderwidth=0,font=('"Times New Roman"')).place(x=3,y=17)
+        self.volume=ttk.Label(self.setting,text='Speech Rate[WPM]:',borderwidth=0,font=('"Times New Roman"')).place(x=3,y=77)
+        self.volume_slider=tk.Scale(self.setting,from_=0,to=10,orient=tk.HORIZONTAL)
+        Integer_class=tk.IntVar(self.setting,value=mycursor.execute('select rate from speech_rate').fetchone()[0])
+        self.speech_rate_text_box=ttk.Entry(self.setting,textvariable=Integer_class)
+        self.volume_slider.place(x=137,y=0)
+        self.speech_rate_text_box.place(x=140,y=77)
         self.volume_slider.set((mycursor.execute('select vol from volume').fetchone()[0]))
         conn.commit()
         conn.close()
-        self.Apply_Button=ttk.Button(self.setting,text="Apply",command=self.Apply).place(x=400,y=200)
+        self.Apply_Button=ttk.Button(self.setting,text="Apply",command=self.Apply).place(x=200,y=150)
         self.setting.mainloop()
 
 class camera:
@@ -302,7 +314,7 @@ class camera:
         os.startfile(ImageName)
         os.chdir(a)
        
-class VoiceRecorer:
+class VoiceRecorer: 
     def Record(self,scrollable_text):
         SR=SpeakRecog()
         SR.STS(scrollable_text)
