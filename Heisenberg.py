@@ -7,6 +7,7 @@ import tkinter as tk
 from tkinter import scrolledtext
 from PIL import ImageTk,Image
 import sqlite3
+from functools import partial
 
 """Setting up objects"""
 SR=Annex.SpeakRecog()    #Speak and Recognition class instance
@@ -30,15 +31,11 @@ def CommandsList():
 def clearScreen():
     SR.scrollable_text_clearing()
 
-def setting_window():
-    tp_level=tk.Toplevel()
-    tp_level.mainloop()
-
 def greet():
     conn = sqlite3.connect('Heisenberg.db')
     mycursor=conn.cursor()
     hour=int(datetime.datetime.now().hour)
-    if hour<=4 and hour<12:
+    if hour>=4 and hour<12:
         mycursor.execute('select sentences from goodmorning')
         result=mycursor.fetchall()
         SR.speak(random.choice(result)[0])
@@ -113,6 +110,14 @@ def mainframe():
                 indx=random.randint(0,50)
                 os.startfile(os.path.join(music_dir,songs[indx]))
                 break
+
+            #taking photo
+            elif there_exists(['take a photo','take a selfie','take my photo','take photo','take selfie','one photo please'],query):
+                takephoto=Annex.camera()
+                playsound.playsound('camera-shutter-click.mp3')
+                takephoto.takePhoto()
+                del takephoto
+                SR.speak("Captured picture is stored in Camera folder.")
 
             #play game
             elif there_exists(['would like to play some games','play some games','would like to play some game','want to play some games','want to play game','want to play games','play games','open games','play game','open game'],query):
@@ -230,7 +235,14 @@ def mainframe():
             elif there_exists(['exit','quit','shutdown','shut up','goodbye','shut down'],query):
                 SR.speak("shutting down")
                 sys.exit()
-
+            elif there_exists(['turn on wi-fi'],query):
+                SR.speak("Turning on wifi")
+                os.system("netsh interface set interface 'Wifi' enabled")
+                SR.speak("WI-FI turned on.")
+            elif there_exists(['turn off wi-fi'],query):
+                SR.speak("Turning off wifi")
+                os.system("netsh interface set interface 'Wifi' disabled") 
+                SR.speak("WI-FI turned off.")    
             elif there_exists(['none'],query):
                 pass
             elif there_exists(['stop the flow','stop the execution','halt','halt the process','stop the process','stop listening','stop the listening'],query):
@@ -287,7 +299,8 @@ if __name__=="__main__":
         m1=tk.Menu(myMenu,tearoff=0) #tearoff=0 means the submenu can't be teared of from the window
         m1.add_command(label='Commands List',command=CommandsList)
         myMenu.add_cascade(label="Help",menu=m1)
-        myMenu.add_cascade(label="Settings",command=setting_window)
+        stng_win=Annex.SettingWindow()
+        myMenu.add_cascade(label="Settings",command=partial(stng_win.settingWindow,root))
         myMenu.add_cascade(label="Clear Screen",command=clearScreen)
         root.config(menu=myMenu)
         root.mainloop()

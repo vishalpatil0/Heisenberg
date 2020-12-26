@@ -10,8 +10,16 @@ import pyperclip
 from ttkthemes import themed_tk as tkth
 import tkinter.scrolledtext as scrolledtext
 from functools import partial
+import tkinter.messagebox as tmsg
+import sqlite3
+import cv2
+import playsound
 
 class SpeakRecog:
+    #database connection
+    conn = sqlite3.connect('Heisenberg.db')
+    mycursor=conn.cursor()
+
     engine=pyttsx3.init('sapi5')
     voices=engine.getProperty('voices')
     engine.setProperty('voice',voices[1].id)
@@ -23,13 +31,15 @@ class SpeakRecog:
     # print(rate)
     engine.setProperty('rate', 180)                 # setting up new voice rate
 
-    """VOLUME"""
+    """VOLUME"""   
     volume = engine.getProperty('volume')           #getting to know current volume level (min=0 and max=1)
     # print(volume)                                 #printing current volume level
-    engine.setProperty('volume', 1.0)               # setting up volume level  between 0 and 1
+    engine.setProperty('volume',(mycursor.execute('select vol from volume').fetchone()[0])/10)               # setting up volume level  between 0 and 1
+    conn.commit()
+    conn.close()
     scrollable_text=None
     def STS(self,scrollable_text):
-        '''This is scrollable text sette '''
+        '''This is scrollable text setter '''
         self.scrollable_text=scrollable_text
     def updating_ST(self,data):
         self.scrollable_text.configure(state='normal')
@@ -117,20 +127,20 @@ class PasswordGenerator:
             else:
                 SR.speak("Please say it again")
         del SR
-        
+
 class TextSpeech:
     def txtspk(self):
         SR=SpeakRecog()
         SR.nonPrintSpeak(self.text.get(1.0,tk.END))
         del SR
     def opentxt(self):
-        self.root.focus_force()    
+        self.root.focus_force()
         try:
             file_path=filedialog.askopenfilename(initialdir =r"C:\Users\Vishal\Documents\Projects or important programs\jarvis\Notes",title="Select file",filetypes=(('text file',"*.txt"),("All files", "*.*")))
             with open(file_path,'r') as f:
                 g=f.read()
-        
-            self.root.focus_force()    
+
+            self.root.focus_force()
             self.text.delete(1.0,tk.END)
             self.text.insert(tk.INSERT,g)
             self.text.update()
@@ -138,7 +148,7 @@ class TextSpeech:
             SR.nonPrintSpeak(g)
             del SR
         except FileNotFoundError as e:
-            self.root.focus_force()    
+            self.root.focus_force()
             pass
 
     def __init__(self):
@@ -158,7 +168,7 @@ class TextSpeech:
         self.open_btn=ttk.Button(self.root,text="Open",width=7,command=self.opentxt).grid(row=2,column=2,ipadx=2)
         self.root.focus_set()
         self.root.mainloop()
-    
+
 class note:
     def Note(self,data):
         date=datetime.datetime.now()
@@ -179,10 +189,10 @@ class screenshot:
         if not os.path.exists("Screenshots"):
             os.mkdir("Screenshots")
         os.chdir(a+'\Screenshots')
-        date=datetime.datetime.now()
-        img_captured.save('screenshot-'+str(date).replace(':','-')+'.png')
+        ImageName='screenshot-'+str(datetime.datetime.now()).replace(':','-')+'.png'
+        img_captured.save(ImageName)
         os.chdir(a)
-  
+
 class StonePaperScissor:
     def start(self,scrollable_text):
         SR=SpeakRecog()
@@ -235,7 +245,7 @@ class StonePaperScissor:
             if(human_score==computer_score):
                 SR.speak("\nIt is a tie.\n")
             elif(human_score>computer_score):
-                SR.speak("\nHuman is the winner of this game.\n")    
+                SR.speak("\nHuman is the winner of this game.\n")
             else:
                 SR.speak("\nComputer is the winner of this game.\n")
             SR.updating_ST(87*"*")
@@ -245,6 +255,53 @@ class StonePaperScissor:
                 SR.speak("Getting out of this game to main thread.")
                 break
 
+class SettingWindow:
+    def Apply(self):
+        value=int((self.volume_slider.get()))
+        conn = sqlite3.connect('Heisenberg.db')
+        mycursor=conn.cursor()
+        mycursor.execute('update volume set vol=?',(value,))
+        conn.commit()
+        conn.close()
+        # print(f"{value} type is {type(value)}")
+        tmsg.showinfo("Point to be noted.",f"Setting will be applied after reboot of this program.")
+        self.setting.destroy()
+        
+    def settingWindow(self,root):
+        self.setting=tk.Toplevel(root)
+        self.setting.title("Settings")
+        self.setting.iconbitmap('setting.ico')
+        self.setting.geometry("500x300+440+170")
+        self.volume=ttk.Label(self.setting,text='Volume: ',borderwidth=0,font=('"Times New Roman"')).place(x=3,y=17)
+        self.volume_slider=tk.Scale(self.setting,from_=0,to=10,orient=tk.HORIZONTAL)
+        self.volume_slider.place(x=70,y=0)
+        #database connection
+        conn = sqlite3.connect('Heisenberg.db')
+        mycursor=conn.cursor()
+        self.volume_slider.set((mycursor.execute('select vol from volume').fetchone()[0]))
+        conn.commit()
+        conn.close()
+        self.Apply_Button=ttk.Button(self.setting,text="Apply",command=self.Apply).place(x=400,y=200)
+        self.setting.mainloop()
+
+class camera:
+    def takePhoto(self):
+        self.videoCaptureObject = cv2.VideoCapture(0)
+        self.result = True
+        a=os.getcwd()
+        if not os.path.exists("Camera"):
+            os.mkdir("Camera")
+        os.chdir(a+'\Camera')
+        self.ImageName="Image-"+str(datetime.datetime.now()).replace(':','-')+".jpg"
+        while(self.result):
+            self.ret,self.frame = self.videoCaptureObject.read()
+            cv2.imwrite(self.ImageName,self.frame)
+            self.result = False
+        self.videoCaptureObject.release()
+        cv2.destroyAllWindows()
+        os.startfile(ImageName)
+        os.chdir(a)
+       
 class VoiceRecorer:
     def Record(self,scrollable_text):
         SR=SpeakRecog()
