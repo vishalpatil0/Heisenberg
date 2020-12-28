@@ -1,7 +1,7 @@
-import datetime,subprocess,os,pyautogui,string,random
+import datetime,subprocess,os,pyautogui,string,random,time
 import pyttsx3
 import speech_recognition as sr
-import sounddevice
+import sounddevice,pywhatkit
 from scipy.io.wavfile import write
 from tkinter import filedialog
 import tkinter as tk
@@ -334,3 +334,36 @@ class VoiceRecorer:
         SR.speak("Voice is recorded in \'Recordings\' folder.")
         os.chdir(a)
         del SR
+
+class WhatsApp:
+    def __init__(self,scrollable_text):
+        self.SR=SpeakRecog()
+        self.SR.STS(scrollable_text)
+    def send(self):
+        self.SR.speak("Please tell me the mobile number whom do you want to send message.")
+        mobile_number=None
+        while(True):
+            mobile_number=self.SR.takeCommand().replace(' ','')
+            if mobile_number[0]=='0':
+                mobile_number=mobile_number[1:]
+            if not mobile_number.isdigit() or len(mobile_number)!=10:
+                self.SR.speak("Please say it again")
+            else:
+                break
+        mobile_number.replace(' ','')
+        self.SR.speak("Tell me your message......")
+        message=self.SR.takeCommand()
+        self.SR.speak("Opening whatsapp web to send your message.")
+        self.SR.speak("Please be patient, sometimes it takes time.\nOR In some cases it does not works.")
+        while(True):
+            try:
+                pywhatkit.sendwhatmsg("+91"+mobile_number,message,datetime.datetime.now().hour,datetime.datetime.now().minute+1)
+                break
+            except Exception:
+                pass
+        time.sleep(20)
+        self.SR.speak('Message sent succesfully.')
+        
+        
+
+
