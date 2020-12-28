@@ -368,18 +368,14 @@ def gen(n):
     for i in range(n):
         yield i
 
-def stopFlow():
-    exit_flag=True
-exit_flag=False
 class MainframeThread(threading.Thread):
     def __init__(self, threadID, name):
-        threading.Thread.__init__(self,args =(lambda : exit_flag, ))
+        threading.Thread.__init__(self)
         self.threadID = threadID
         self.name = name
     def run(self):
         mainframe()
 
-MainframeThread_object=None
 def Launching_thread():
     Thread_ID=gen(1000)
     global MainframeThread_object
@@ -412,6 +408,5 @@ if __name__=="__main__":
         stng_win=Annex.SettingWindow()
         myMenu.add_cascade(label="Settings",command=partial(stng_win.settingWindow,root))
         myMenu.add_cascade(label="Clear Screen",command=clearScreen)
-        myMenu.add_cascade(label="Stop",command=stopFlow)
         root.config(menu=myMenu)
         root.mainloop()
