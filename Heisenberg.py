@@ -386,7 +386,7 @@ if __name__=="__main__":
         #tkinter code
         root=themed_tk.ThemedTk()
         root.set_theme("winnative")
-        root.geometry('745x360+300+150')
+        root.geometry("{}x{}+{}+{}".format(745,360,int(root.winfo_screenwidth()/2 - 745/2),int(root.winfo_screenheight()/2 - 360/2)))
         root.resizable(0,0)
         root.title("Heisenberg")
         root.iconbitmap('Heisenberg.ico')
