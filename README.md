@@ -21,6 +21,15 @@ pip install google-api-python-client
 pip install monotonic
 pip install SpeechRecognition
 pip install scipy
+pip install threaded
+pip install functools
+pip install pywhatkit
+pip install pyjokes
+pip install pygame
+pip install pyperclip
+pip install opencv-python
+pip install pysqlite3
+pip install db-sqlite3
 ```
 For installation of pyaudio
 ```bash
