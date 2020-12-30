@@ -128,7 +128,7 @@ class PasswordGenerator:
 
 class TextSpeech:
     def txtspk(self):
-        SR=SpeakRecog(self)
+        SR=SpeakRecog(None)
         SR.nonPrintSpeak(self.text.get(1.0,tk.END))
         del SR
     def opentxt(self):
@@ -142,7 +142,7 @@ class TextSpeech:
             self.text.delete(1.0,tk.END)
             self.text.insert(tk.INSERT,g)
             self.text.update()
-            SR=SpeakRecog(self)
+            SR=SpeakRecog(None)
             SR.nonPrintSpeak(g)
             del SR
         except FileNotFoundError as e:
@@ -367,6 +367,8 @@ class Weather:
         SR=SpeakRecog(scrollable_text)
         base_url = "http://api.openweathermap.org/data/2.5/weather?q=Pune,IN&units=metric&appid=ea45752424c9cad83b4f5c836ced6b1a"
         data=requests.get(base_url).json()
+        SR.scrollable_text_clearing()
+        SR.speak("-----------------------------Weather Report of PUNE City------------------------------")
         SR.updating_ST("Temperature:   "+str(int(data['main']['temp']))+' Celsius\n'+
                         "Wind Speed:    "+str(data['wind']['speed'])+' m/s\n'+
                         "Latitude:      "+str(data['coord']['lat'])+

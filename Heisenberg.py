@@ -104,6 +104,11 @@ def mainframe():
                 url='https://google.com/search?q='+query[query.find('for')+4:]
                 webbrowser.get(chrome_path).open(url)
                 break
+            #image search
+            elif there_exists(['show me images of','images of','display images'],query):
+                url="https://www.google.com/search?tbm=isch&q="+query[query.find('of')+3:]
+                webbrowser.get(chrome_path).open(url)  
+                break
             elif there_exists(['search for','do a little searching for','show me results for','show me result for','start searching for'],query):
                 SR.speak("Searching.....")
                 if 'search for' in query:
@@ -146,7 +151,7 @@ def mainframe():
                 SR.speak(results)
 
             #play music
-            elif there_exists(['play music'],query):
+            elif there_exists(['play music','play some music for me','like to listen some music'],query):
                 SR.speak("Playing musics")
                 music_dir='D:\\Musics\\vishal'
                 songs=os.listdir(music_dir)
@@ -162,11 +167,9 @@ def mainframe():
                 del whatsapp
             #what is meant by
             elif there_exists(['what is meant by','what is mean by'],query):
-                try:
-                    res=app.query(query)
-                    SR.speak(next(res.results).text)
-                except:
-                    print("Sorry, but there is a little problem while fetching the result.")
+                results=wikipedia.summary(query,sentences=2)
+                SR.speak("According to wikipedia:\n")
+                SR.speak(results)
 
             #taking photo
             elif there_exists(['take a photo','take a selfie','take my photo','take photo','take selfie','one photo please','click a photo'],query):

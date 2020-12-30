@@ -1,3 +1,9 @@
+This is just a example of "How you can give commands"
+
+like for example  there is a commnad "play music" so you can say that would you "play some music for me" or the alternative of it like "I would like to listen some musics".
+
+But not all alternative will work.
+
 1) Search Mode/ search something for me/
 
 2) Wikipedia (your search)
@@ -39,3 +45,23 @@
 20) current temperature
 
 21) Voice Calculator
+
+22) tell me some jokes
+
+23) send a whatsapp message
+
+24) play (song name) on youtube
+
+25) search for (topic you want to search for)
+
+26) who is (person name)
+
+27) what is meant by (topic you want definition for)
+
+28) take a photo/ take a selfie
+
+29) open bluetooth/ send some files through bluetooth
+
+30) weather report
+
+31) what is the capital of (country name)
