@@ -6,13 +6,15 @@ from scipy.io.wavfile import write
 from tkinter import filedialog
 import tkinter as tk
 from tkinter import ttk
-import pyperclip,cv2,playsound
+import pyperclip,cv2,playsound,requests,json 
 from ttkthemes import themed_tk as tkth
 import tkinter.scrolledtext as scrolledtext
 from functools import partial
 import tkinter.messagebox as tmsg,sqlite3
 
 class SpeakRecog:
+    def __init__(self,scrollable_text):
+        self.scrollable_text=scrollable_text
     #database connection
     conn = sqlite3.connect('Heisenberg.db')
     mycursor=conn.cursor()
@@ -106,8 +108,7 @@ class PasswordGenerator:
         root.mainloop()
         del root
     def givePSWD(self,scrollable_text):
-        SR=SpeakRecog()
-        SR.STS(scrollable_text)
+        SR=SpeakRecog(scrollable_text)
         SR.speak("What type of password you want?")
         SR.updating_ST("\nPassword Level we have:-\n\nPoor Level\nAverage Level\nStrong Level\n")
         while(True):
@@ -127,7 +128,7 @@ class PasswordGenerator:
 
 class TextSpeech:
     def txtspk(self):
-        SR=SpeakRecog()
+        SR=SpeakRecog(self)
         SR.nonPrintSpeak(self.text.get(1.0,tk.END))
         del SR
     def opentxt(self):
@@ -141,7 +142,7 @@ class TextSpeech:
             self.text.delete(1.0,tk.END)
             self.text.insert(tk.INSERT,g)
             self.text.update()
-            SR=SpeakRecog()
+            SR=SpeakRecog(self)
             SR.nonPrintSpeak(g)
             del SR
         except FileNotFoundError as e:
@@ -193,8 +194,7 @@ class screenshot:
 
 class StonePaperScissor:
     def start(self,scrollable_text):
-        SR=SpeakRecog()
-        SR.STS(scrollable_text)
+        SR=SpeakRecog(scrollable_text)
         list1=['stone','paper','scissor']
         while(True):
             SR.scrollable_text_clearing()
@@ -318,8 +318,7 @@ class camera:
        
 class VoiceRecorer: 
     def Record(self,scrollable_text):
-        SR=SpeakRecog()
-        SR.STS(scrollable_text)
+        SR=SpeakRecog(scrollable_text)
         SR.speak("This recording is of 10 seconds.")
         fs=44100
         second=10
@@ -337,8 +336,7 @@ class VoiceRecorer:
 
 class WhatsApp:
     def __init__(self,scrollable_text):
-        self.SR=SpeakRecog()
-        self.SR.STS(scrollable_text)
+        self.SR=SpeakRecog(scrollable_text)
     def send(self):
         self.SR.speak("Please tell me the mobile number whom do you want to send message.")
         mobile_number=None
@@ -363,7 +361,14 @@ class WhatsApp:
                 pass
         time.sleep(20)
         self.SR.speak('Message sent succesfully.')
-        
-        
 
-
+class Weather:
+    def show(self,scrollable_text):
+        SR=SpeakRecog(scrollable_text)
+        base_url = "http://api.openweathermap.org/data/2.5/weather?q=Pune,IN&units=metric&appid=ea45752424c9cad83b4f5c836ced6b1a"
+        data=requests.get(base_url).json()
+        SR.updating_ST("Temperature:   "+str(int(data['main']['temp']))+' Celsius\n'+
+                        "Wind Speed:    "+str(data['wind']['speed'])+' m/s\n'+
+                        "Latitude:      "+str(data['coord']['lat'])+
+                        "\nLongitude:     "+str(data['coord']['lon'])+
+                        "\nDescription:   "+str(data['weather'][0]['description'])+'\n')

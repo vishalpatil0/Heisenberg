@@ -9,9 +9,6 @@ from PIL import ImageTk,Image
 import sqlite3,pyjokes,pywhatkit
 from functools import partial
 
-"""Setting up objects"""
-SR=Annex.SpeakRecog()    #Speak and Recognition class instance
-
 try:
     app=wolframalpha.Client("JPK4EE-L7KR3XWP9A")
 except Exception as e:
@@ -317,6 +314,12 @@ def mainframe():
                 SR.speak("Opening Text to Speech mode")
                 TS=Annex.TextSpeech()
                 del TS
+            
+            #weather report
+            elif there_exists(['weather report','temperature'],query):
+                Weather=Annex.Weather()
+                Weather.show(scrollable_text)
+
             #shutting down system
             elif there_exists(['exit','quit','shutdown','shut up','goodbye','shut down'],query):
                 SR.speak("shutting down")
@@ -398,9 +401,10 @@ if __name__=="__main__":
         mic_img=ImageTk.PhotoImage(mic_img)
         Speak_label=tk.Label(root,text="SPEAK:",fg="#FFD700",font='"Times New Roman" 12 ',borderwidth=0,bg='#2c4557')
         Speak_label.place(x=250,y=300)
+        """Setting up objects"""    
+        SR=Annex.SpeakRecog(scrollable_text)    #Speak and Recognition class instance
         Listen_Button=tk.Button(root,image=mic_img,borderwidth=0,activebackground='#2c4557',bg='#2c4557',command=Launching_thread)
         Listen_Button.place(x=330,y=280)
-        SR.STS(scrollable_text)
         myMenu=tk.Menu(root)
         m1=tk.Menu(myMenu,tearoff=0) #tearoff=0 means the submenu can't be teared of from the window
         m1.add_command(label='Commands List',command=CommandsList)
