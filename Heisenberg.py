@@ -159,6 +159,11 @@ def mainframe():
                 indx=random.randint(0,50)
                 os.startfile(os.path.join(music_dir,songs[indx]))
                 break
+            
+            # top 5 news
+            elif there_exists(['top 5 news','top five news','listen some news','news of today'],query):
+                news=Annex.News(scrollable_text)
+                news.show()
 
             #whatsapp message
             elif there_exists(['open whatsapp messeaging','send a whatsapp message','send whatsapp message','please send a whatsapp message'],query):

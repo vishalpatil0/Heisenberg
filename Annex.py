@@ -334,6 +334,19 @@ class VoiceRecorer:
         os.chdir(a)
         del SR
 
+class News:
+    def __init__(self,scrollable_text):
+        self.SR=SpeakRecog(scrollable_text)
+    def show(self):
+        self.SR.speak("Showing top 5 news of today.")
+        self.SR.scrollable_text_clearing()
+        self.SR.updating_ST("-----------------------------Top 5 news of all categories.----------------------------")
+        r=requests.get('http://newsapi.org/v2/top-headlines?country=in&apiKey=329416dc10ea4588a0a8f6b233116393')
+        data=json.loads(r.content)
+        for i in range(5):
+            self.SR.updating_ST_No_newline(f'News {i+1}:  ')
+            self.SR.speak(data['articles'][i]['title']+'\n')
+
 class WhatsApp:
     def __init__(self,scrollable_text):
         self.SR=SpeakRecog(scrollable_text)
