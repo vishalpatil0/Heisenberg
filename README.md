@@ -13,7 +13,6 @@ pip install PyAutoGUI
 pip install sounddevice
 pip install playsound
 pip install wolframalpha
-pip install subprocess
 pip install urllib3
 pip install bs4
 pip install wheel
