@@ -10,7 +10,7 @@ import sqlite3,pyjokes,pywhatkit
 from functools import partial
 
 try:
-    app=wolframalpha.Client("JPK4EE-L7KR3XWP9A")
+    app=wolframalpha.Client("JPK4EE-L7KR3XWP9A")  #API key for wolframalpha
 except Exception as e:
     pass
 
@@ -23,9 +23,11 @@ def there_exists(terms,query):
             return True
 
 def CommandsList():
+    '''show the command to which voice assistant is registered with'''
     os.startfile('Commands List.txt')
 
 def clearScreen():
+    ''' clear the scrollable text box'''
     SR.scrollable_text_clearing()
 
 def greet():
@@ -50,19 +52,31 @@ def greet():
         SR.speak(random.choice(result)[0])
     conn.commit()
     conn.close()
-    SR.speak("Myself Heisenberg. How may I help you?")
+    SR.speak("\nMyself Heisenberg. How may I help you?")
 
 def mainframe():
+    """Logic for execution task based on query"""
     SR.scrollable_text_clearing()
     greet()
-    """Logic for execution task based on query"""
     query_for_future=None
     try:
         while(True):
-            query=SR.takeCommand().lower()
+            query=SR.takeCommand().lower()          #converted the command in lower case of ease of matching
 
             #wikipedia search
-            if there_exists(['wikipedia'],query):
+            if there_exists(['search wikipedia for','from wikipedia'],query):
+                SR.speak("Searching wikipedia...")
+                if 'search wikipedia for' in query:
+                    query=query.replace('search wikipedia for','')
+                    results=wikipedia.summary(query,sentences=2)
+                    SR.speak("According to wikipedia:\n")
+                    SR.speak(results)
+                elif 'from wikipedia' in query:
+                    query=query.replace('from wikipedia','')
+                    results=wikipedia.summary(query,sentences=2)
+                    SR.speak("According to wikipedia:\n")
+                    SR.speak(results)
+            elif there_exists(['wikipedia'],query):
                 SR.speak("Searching wikipedia....")
                 query=query.replace("wikipedia","")
                 results=wikipedia.summary(query,sentences=2)
@@ -77,17 +91,26 @@ def mainframe():
                 query_for_future=query
             elif there_exists(['one more','one more please','tell me more','i would like to hear more of them','once more','once again','more','again'],query) and (query_for_future is not None):
                 SR.speak(pyjokes.get_joke(language="en", category="all"))
-               
-            #asking for name
-            elif there_exists(["what is your name","what's your name","tell me your name"],query):
-                SR.speak("My name is Heisenberg and I'm here to serve you.")
 
+            #asking for name
+            elif there_exists(["what is your name","what's your name","tell me your name",'who are you'],query):
+                SR.speak("My name is Heisenberg and I'm here to serve you.")
+            #How are you
+            elif there_exists(['how are you'],query):
+                conn = sqlite3.connect('Heisenberg.db')
+                mycursor=conn.cursor()
+                mycursor.execute('select sentences from howareyou')
+                result=mycursor.fetchall()
+                temporary_data=random.choice(result)[0]
+                SR.updating_ST_No_newline(temporary_data+'😃\n')
+                SR.nonPrintSpeak(temporary_data)
+                conn.close()
             #google, youtube and location
             #playing on youtube
             elif there_exists(['open youtube and play','on youtube'],query):
                 if 'on youtube' in query:
                     SR.speak("Opening youtube")
-                    pywhatkit.playonyt(query.replace('on youtube','')) 
+                    pywhatkit.playonyt(query.replace('on youtube',''))
                 else:
                     SR.speak("Opening youtube")
                     pywhatkit.playonyt(query.replace('open youtube and play ',''))
@@ -107,7 +130,7 @@ def mainframe():
             #image search
             elif there_exists(['show me images of','images of','display images'],query):
                 url="https://www.google.com/search?tbm=isch&q="+query[query.find('of')+3:]
-                webbrowser.get(chrome_path).open(url)  
+                webbrowser.get(chrome_path).open(url)
                 break
             elif there_exists(['search for','do a little searching for','show me results for','show me result for','start searching for'],query):
                 SR.speak("Searching.....")
@@ -123,8 +146,8 @@ def mainframe():
                 elif 'start searching for' in query:
                     SR.speak(f"Showing results for {query.replace('start searching for','')}")
                     pywhatkit(query.replace('start searching for',''))
-                break  
-                    
+                break
+
             elif there_exists(['open google'],query):
                 SR.speak("Opening google")
                 webbrowser.get(chrome_path).open("https://www.google.com")
@@ -147,7 +170,7 @@ def mainframe():
             elif there_exists(['who is','who the heck is','who the hell is','who is this'],query):
                 query=query.replace("wikipedia","")
                 results=wikipedia.summary(query,sentences=1)
-                SR.speak("According to wikipdedia:  ")  
+                SR.speak("According to wikipdedia:  ")
                 SR.speak(results)
 
             #play music
@@ -159,7 +182,7 @@ def mainframe():
                 indx=random.randint(0,50)
                 os.startfile(os.path.join(music_dir,songs[indx]))
                 break
-            
+
             # top 5 news
             elif there_exists(['top 5 news','top five news','listen some news','news of today'],query):
                 news=Annex.News(scrollable_text)
@@ -322,7 +345,7 @@ def mainframe():
                 SR.speak("Opening Text to Speech mode")
                 TS=Annex.TextSpeech()
                 del TS
-            
+
             #weather report
             elif there_exists(['weather report','temperature'],query):
                 Weather=Annex.Weather()
@@ -349,7 +372,7 @@ def mainframe():
                 except:
                     print("Sorry, but there is a little problem while fetching the result.")
 
-            #what is the capital 
+            #what is the capital
             elif there_exists(['what is the capital of','capital of','capital city of'],query):
                 try:
                     res=app.query(query)
@@ -392,7 +415,7 @@ def Launching_thread():
     global MainframeThread_object
     MainframeThread_object=MainframeThread(Thread_ID.__next__(),"Mainframe")
     MainframeThread_object.start()
-            
+
 if __name__=="__main__":
         #tkinter code
         root=themed_tk.ThemedTk()
@@ -409,7 +432,7 @@ if __name__=="__main__":
         mic_img=ImageTk.PhotoImage(mic_img)
         Speak_label=tk.Label(root,text="SPEAK:",fg="#FFD700",font='"Times New Roman" 12 ',borderwidth=0,bg='#2c4557')
         Speak_label.place(x=250,y=300)
-        """Setting up objects"""    
+        """Setting up objects"""
         SR=Annex.SpeakRecog(scrollable_text)    #Speak and Recognition class instance
         Listen_Button=tk.Button(root,image=mic_img,borderwidth=0,activebackground='#2c4557',bg='#2c4557',command=Launching_thread)
         Listen_Button.place(x=330,y=280)

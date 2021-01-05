@@ -75,7 +75,7 @@ class SpeakRecog:
         # mic=Microphone()
         with sr.Microphone() as source:
             #r.adjust_for_ambient_noise(source)
-            self.updating_ST("Listening...")
+            self.updating_ST("\nListening...")
             recog.pause_threshold = 1
             # r.energy_threshold = 45.131829621150224
             # print(sr.Microphone.list_microphone_names())
