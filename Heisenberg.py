@@ -8,6 +8,7 @@ from tkinter import scrolledtext
 from PIL import ImageTk,Image
 import sqlite3,pyjokes,pywhatkit
 from functools import partial
+import getpass,calendar
 
 try:
     app=wolframalpha.Client("JPK4EE-L7KR3XWP9A")  #API key for wolframalpha
@@ -105,6 +106,14 @@ def mainframe():
                 SR.updating_ST_No_newline(temporary_data+'😃\n')
                 SR.nonPrintSpeak(temporary_data)
                 conn.close()
+            #what is my name
+            elif there_exists(['what is my name','tell me my name',"i don't remember my name"],query):
+                SR.speak("Your name is "+str(getpass.getuser()))
+
+            #calendar
+            elif there_exists(['show me calendar','display calendar'],query):
+                SR.updating_ST(calendar.calendar(2021))
+
             #google, youtube and location
             #playing on youtube
             elif there_exists(['open youtube and play','on youtube'],query):
@@ -152,11 +161,16 @@ def mainframe():
                 SR.speak("Opening google")
                 webbrowser.get(chrome_path).open("https://www.google.com")
                 break
-            elif there_exists(['find location of'],query):
-                url='https://google.nl/maps/place/'+query[query.find('of')+3:]+'/&amp'
-                webbrowser.get(chrome_path).open(url)
-                break
-            elif there_exists(["what is my exact location","What is my location","my current location"],query):
+            elif there_exists(['find location of','show location of','find location for','show location for'],query):
+                if 'of' in query:
+                    url='https://google.nl/maps/place/'+query[query.find('of')+3:]+'/&amp'
+                    webbrowser.get(chrome_path).open(url)
+                    break
+                elif 'for' in query:
+                    url='https://google.nl/maps/place/'+query[query.find('for')+4:]+'/&amp'
+                    webbrowser.get(chrome_path).open(url)
+                    break
+            elif there_exists(["what is my exact location","What is my location","my current location","exact current location"],query):
                 url = "https://www.google.com/maps/search/Where+am+I+?/"
                 webbrowser.get().open(url)
                 SR.speak("Showing your current location on google maps...")
